@@ -34,7 +34,7 @@ export const Container = styled.div`
     gap: 2rem;
 
     button {
-      padding: 0.5rem;
+      padding: 0.5rem 1rem;
       color: ${palette.carousel_button_color};
       font-weight: 600;
       border: none;
