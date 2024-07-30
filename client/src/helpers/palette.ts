@@ -20,8 +20,21 @@ const colors = {
 };
 
 export const palette = {
+  header_background: colors.black.v1,
+  header_link_color: colors.beige.v3,
+  header_link_background: colors.green.v1,
+
   home_title_color: colors.beige.v3,
   home_text_color: colors.beige.v3,
   home_button_color: colors.green.v1,
   home_button_background: colors.beige.v3,
+
+  menu_background: colors.black.v1,
+  menu_title_color: colors.beige.v3,
+  menu_text_color: colors.beige.v3,
+
+  carousel_button_background: colors.beige.v1,
+  carousel_button_color: colors.beige.v3,
+  carousel_title_color: colors.beige.v3,
+  carousel_text_color: colors.beige.v2,
 };
