@@ -13,6 +13,11 @@ export const Container = styled.header`
     width: 90%;
   }
 
+  img {
+    width: 5rem;
+    border-radius: 50%;
+  }
+
   nav {
     ${setFlexbox("center", "center", "row")}
     gap: 2rem;

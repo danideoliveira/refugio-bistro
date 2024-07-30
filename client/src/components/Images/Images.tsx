@@ -1,3 +1,4 @@
+import logo from "../../assets/img/logo.jpg";
 import homeImage from "../../assets/img/homeImage.jpg";
 
 // Carousel
@@ -12,6 +13,7 @@ import dessert2 from "../../assets/img/dessert2.jpg";
 import dessert3 from "../../assets/img/dessert3.jpg";
 
 export const images = {
+  logo,
   homeImage,
   meal1,
   meal2,

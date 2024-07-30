@@ -1,3 +1,4 @@
+import { images } from "../Images/Images";
 import { Container, StyledLink } from "./Header.styled";
 
 function Header() {
@@ -5,7 +6,7 @@ function Header() {
     <>
       <Container>
         <div className="header-box">
-          <img src="" alt="logo" className="logo" />
+          <img src={images.logo} alt="logo" className="logo" />
 
           <nav>
             <StyledLink to="/">Início</StyledLink>
