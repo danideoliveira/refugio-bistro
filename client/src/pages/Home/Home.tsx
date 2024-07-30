@@ -20,7 +20,6 @@ function Home() {
         </article>
         <div className="gradient" />
       </Container>
-      ;
     </>
   );
 }
