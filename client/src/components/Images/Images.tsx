@@ -13,9 +13,13 @@ import dessert1 from "../../assets/img/dessert1.jpg";
 import dessert2 from "../../assets/img/dessert2.jpg";
 import dessert3 from "../../assets/img/dessert3.jpg";
 
+// Location
 import location1 from "../../assets/img/location1.jpg";
 import location2 from "../../assets/img/location2.jpg";
 import location3 from "../../assets/img/location3.jpg";
+
+// Login
+import loginBackground from "../../assets/img/loginBackground.png";
 
 export const images = {
   logo,
@@ -33,4 +37,5 @@ export const images = {
   location1,
   location2,
   location3,
+  loginBackground,
 };
