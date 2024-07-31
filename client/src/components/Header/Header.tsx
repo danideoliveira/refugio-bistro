@@ -11,7 +11,7 @@ function Header() {
           <nav>
             <StyledLink to="/">Início</StyledLink>
             <StyledLink to="#cardapio">Cardápio</StyledLink>
-            <StyledLink to="/" className="header-login">
+            <StyledLink to="/login" className="header-login">
               Login
             </StyledLink>
           </nav>
