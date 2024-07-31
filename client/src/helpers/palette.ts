@@ -16,6 +16,7 @@ const colors = {
 
   black: {
     v1: "#0E0E0E",
+    v2: "#1C1C1C",
   },
 };
 
@@ -43,4 +44,9 @@ export const palette = {
   location_text_color: colors.beige.v3,
   location_button_color: colors.beige.v3,
   location_button_background: colors.green.v1,
+
+  footer_background: colors.black.v2,
+  footer_title_color: colors.beige.v2,
+  footer_text_color: colors.beige.v3,
+  footer_icon: colors.beige.v3,
 };
