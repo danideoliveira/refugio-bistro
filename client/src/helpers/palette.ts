@@ -37,4 +37,10 @@ export const palette = {
   carousel_button_color: colors.beige.v3,
   carousel_title_color: colors.beige.v3,
   carousel_text_color: colors.beige.v2,
+
+  location_background: colors.black.v1,
+  location_title_color: colors.beige.v3,
+  location_text_color: colors.beige.v3,
+  location_button_color: colors.beige.v3,
+  location_button_background: colors.green.v1,
 };
