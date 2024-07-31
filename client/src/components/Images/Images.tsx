@@ -1,4 +1,5 @@
 import logo from "../../assets/img/logo.jpg";
+import logoLocation from "../../assets/img/logoLocation.png";
 import homeImage from "../../assets/img/homeImage.jpg";
 
 // Carousel
@@ -12,8 +13,13 @@ import dessert1 from "../../assets/img/dessert1.jpg";
 import dessert2 from "../../assets/img/dessert2.jpg";
 import dessert3 from "../../assets/img/dessert3.jpg";
 
+import location1 from "../../assets/img/location1.jpg";
+import location2 from "../../assets/img/location2.jpg";
+import location3 from "../../assets/img/location3.jpg";
+
 export const images = {
   logo,
+  logoLocation,
   homeImage,
   meal1,
   meal2,
@@ -24,4 +30,7 @@ export const images = {
   dessert1,
   dessert2,
   dessert3,
+  location1,
+  location2,
+  location3,
 };
