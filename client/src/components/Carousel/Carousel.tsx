@@ -68,17 +68,17 @@ function Carousel() {
     snacks: [
       {
         image: images.snack1,
-        title: "Hamburguer Tradicional + Batata Frita",
+        title: "Lanche",
         price: "R$12,00",
       },
       {
         image: images.snack2,
-        title: "Hamburguer Tradicional + Batata Frita",
+        title: "Lanche",
         price: "R$25,00",
       },
       {
         image: images.snack3,
-        title: "Hamburguer Tradicional + Batata Frita",
+        title: "Lanche",
         price: "R$17,00",
       },
     ],
