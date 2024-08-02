@@ -13,6 +13,33 @@ export const Container = styled.header`
     width: 90%;
   }
 
+  .header-logo {
+    ${setFlexbox("center", "center", "row")}
+    gap: 1rem;
+
+    span {
+      color: #fff;
+      font-size: 1.4rem;
+    }
+  }
+
+  .header-logout {
+    padding: 0.5rem 1rem;
+    font-size: 1.6rem;
+    text-decoration: none;
+    transition: 0.3s all ease;
+    font-weight: 500;
+    border-radius: 5px;
+    background: red;
+    color: ${palette.header_link_color};
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(0.8);
+    }
+  }
+
   img {
     width: 5rem;
     border-radius: 50%;
