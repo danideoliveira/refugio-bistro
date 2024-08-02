@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { setFlexbox } from "../../helpers/mixins";
 import { palette } from "../../helpers/palette";
 import { Link } from "react-router-dom";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export const Container = styled.form`
   ${setFlexbox("space-evenly", "center", "column")}
@@ -57,7 +58,10 @@ export const Container = styled.form`
   }
 
   button {
+    ${setFlexbox("center", "center", "row")}
     padding: 0.5rem 2rem;
+    height: 3rem;
+    width: 10rem;
     border: none;
     border-radius: 5px;
     font-size: 1.6rem;
@@ -78,4 +82,18 @@ export const StyledLink = styled(Link)`
   font-weight: 500;
   color: ${palette.form_text_color};
   text-decoration: none;
+`;
+
+const animate = keyframes`
+  0% {
+    rotate: 0deg;
+  }
+
+  100% {
+    rotate: 360deg;
+  }
+`;
+
+export const StyledLoading = styled(AiOutlineLoading)`
+  animation: ${animate} 0.7s infinite;
 `;
