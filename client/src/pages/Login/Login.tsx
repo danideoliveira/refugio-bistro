@@ -3,20 +3,21 @@ import { Container } from "./Login.styled";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StyledLink } from "../../components/Form/Form.styled";
+import { StyledLink, StyledLoading } from "../../components/Form/Form.styled";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 const schema = z.object({
   email: z
     .string()
     .email("Digite um email válido")
     .min(1, "O email é obrigatório"),
-  password: z
-    .string()
-    .min(3, "A senha deve ter pelo menos 3 caracteres")
-    .max(10, "A senha deve ter 10 caracteres"),
+  password: z.string().min(1, "Preencha o campo de senha"),
 });
 
 function Login() {
+  const { signIn, loading } = useContext<any>(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -25,9 +26,9 @@ function Login() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
-    alert("Enviado");
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    const { email, password } = data;
+    await signIn(email, password);
   };
 
   return (
@@ -39,14 +40,18 @@ function Login() {
           <div className="box-inputs">
             <div className="input-square">
               <label>Email</label>
-              <input {...register("email")} />
+              <input disabled={loading} {...register("email")} />
               <span className="error">
                 {errors?.email?.message?.toString() || ""}
               </span>
             </div>
             <div className="input-square">
               <label>Senha</label>
-              <input type="password" {...register("password")} />
+              <input
+                disabled={loading}
+                type="password"
+                {...register("password")}
+              />
               <span className="error">
                 {errors?.password?.message?.toString() || ""}
               </span>
@@ -54,7 +59,9 @@ function Login() {
           </div>
 
           <div className="submit-square">
-            <button>Enviar</button>
+            <button disabled={loading}>
+              {!loading ? "Enviar" : <StyledLoading />}
+            </button>
             <StyledLink to="/register">
               Ainda não possui uma conta? Cadastre-se!
             </StyledLink>

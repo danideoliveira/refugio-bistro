@@ -3,7 +3,9 @@ import { Container } from "./Register.styled";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StyledLink } from "../../components/Form/Form.styled";
+import { StyledLink, StyledLoading } from "../../components/Form/Form.styled";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 const schema = z.object({
   name: z.string().min(1, "O campo nome é obrigatório."),
@@ -11,13 +13,12 @@ const schema = z.object({
     .string()
     .email("Digite um email válido")
     .min(1, "O email é obrigatório"),
-  password: z
-    .string()
-    .min(3, "A senha deve ter pelo menos 3 caracteres")
-    .max(10, "A senha deve ter 10 caracteres"),
+  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 
 function Register() {
+  const { signUp, loading }: any = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -26,10 +27,10 @@ function Register() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
-    alert("Enviado");
-    console.log(data);
-  };
+  async function onSubmit(data: any) {
+    const { name, email, password } = data;
+    await signUp(name, email, password);
+  }
 
   return (
     <>
@@ -45,6 +46,7 @@ function Register() {
                 {errors?.name?.message?.toString() || ""}
               </span>
             </div>
+
             <div className="input-square">
               <label>Email</label>
               <input {...register("email")} />
@@ -52,6 +54,7 @@ function Register() {
                 {errors?.email?.message?.toString() || ""}
               </span>
             </div>
+
             <div className="input-square">
               <label>Senha</label>
               <input type="password" {...register("password")} />
@@ -62,7 +65,7 @@ function Register() {
           </div>
 
           <div className="submit-square">
-            <button>Cadastrar</button>
+            <button> {!loading ? "Cadastrar" : <StyledLoading />}</button>
             <StyledLink to="/login">
               Já possui uma conta? Faça login!
             </StyledLink>
