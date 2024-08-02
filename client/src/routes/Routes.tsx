@@ -4,6 +4,7 @@ import Menu from "../pages/Menu/Menu";
 import Location from "../pages/Location/Location";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
+import Private from "./Private";
 
 function RoutesApp() {
   return (
@@ -19,8 +20,22 @@ function RoutesApp() {
             </>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={
+            <Private>
+              <Login />
+            </Private>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Private>
+              <Register />
+            </Private>
+          }
+        />
       </Routes>
     </>
   );
