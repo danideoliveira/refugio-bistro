@@ -23,6 +23,9 @@ function App() {
             draggable
             pauseOnHover
             theme="light"
+            style={{
+              fontSize: "1.5rem",
+            }}
           />
           <Header />
           <RoutesApp />
