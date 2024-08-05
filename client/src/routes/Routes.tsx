@@ -5,6 +5,7 @@ import Location from "../pages/Location/Location";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Private from "./Private";
+import Reservation from "../pages/Reservation/Reservation";
 
 function RoutesApp() {
   return (
@@ -33,6 +34,14 @@ function RoutesApp() {
           element={
             <Private>
               <Register />
+            </Private>
+          }
+        />
+        <Route
+          path="/reservation"
+          element={
+            <Private isReservationPath={true}>
+              <Reservation />
             </Private>
           }
         />
