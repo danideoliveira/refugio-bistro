@@ -21,6 +21,10 @@ import location3 from "../../assets/img/location3.jpg";
 // Login
 import loginBackground from "../../assets/img/loginBackground.png";
 
+// Reservation
+import reservationBackground from "../../assets/img/reservationBackground.png";
+import reservationBox from "../../assets/img/reservationBox.png";
+
 export const images = {
   logo,
   logoLocation,
@@ -38,4 +42,6 @@ export const images = {
   location2,
   location3,
   loginBackground,
+  reservationBackground,
+  reservationBox,
 };
