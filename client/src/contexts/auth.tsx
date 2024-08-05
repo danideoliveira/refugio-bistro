@@ -35,11 +35,13 @@ function AuthProvider({ children }: any) {
         await setDoc(doc(db, "users", uid), {
           name: name.split(" ")[0],
           email,
+          reservations: [],
         }).then(() => {
           const data: any = {
             uid,
             name: name.split(" ")[0],
             email,
+            reservations: [],
           };
 
           setUser(data);
@@ -87,6 +89,7 @@ function AuthProvider({ children }: any) {
               uid: value.user.uid,
               name: firstName,
               email: snapData?.email,
+              reservations: snapData?.reservations,
             };
 
             setUser(data);
@@ -126,6 +129,7 @@ function AuthProvider({ children }: any) {
       .then(() => {
         setUser("");
         localStorage.clear();
+        navigate("/");
       })
       .catch((err) => console.log("Erro ao deslogar! " + err));
   }
