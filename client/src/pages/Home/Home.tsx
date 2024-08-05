@@ -16,7 +16,7 @@ function Home() {
             </p>
           </div>
 
-          <Button to="/">Faça sua reserva</Button>
+          <Button to="/reservation">Faça sua reserva</Button>
         </article>
         <div className="gradient" />
       </Container>
