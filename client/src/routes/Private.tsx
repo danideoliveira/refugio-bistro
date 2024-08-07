@@ -2,16 +2,16 @@ import { Navigate } from "react-router-dom";
 
 export default function Private({
   children,
-  isReservationPath,
+  reversePrivate,
 }: {
   children: any;
-  isReservationPath?: boolean;
+  reversePrivate?: boolean;
 }) {
   const currentUser = localStorage.getItem("@currentUser");
 
-  if (currentUser && !isReservationPath) {
+  if (currentUser && !reversePrivate) {
     return <Navigate to="/" />;
-  } else if (!currentUser && isReservationPath) {
+  } else if (!currentUser && reversePrivate) {
     return <Navigate to="/login" />;
   }
 
