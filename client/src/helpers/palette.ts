@@ -66,6 +66,10 @@ export const palette = {
   dropdown_title_color: colors.black.v1,
   dropdown_text_color: colors.black.v1,
 
+  profile_background: colors.white.v1,
+  profile_button_background: colors.green.v2,
+  profile_button_color: colors.white.v1,
+
   footer_background: colors.black.v2,
   footer_title_color: colors.beige.v2,
   footer_text_color: colors.beige.v3,
