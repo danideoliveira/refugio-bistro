@@ -10,11 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { StyledLoading } from "../../components/Form/Form.styled";
 
 function Reservation() {
-  const { user } = useContext<any>(AuthContext);
-  const today = new Date();
-  const arrDate = [today.toLocaleDateString()];
+  const { user, setUser } = useContext<any>(AuthContext);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const arrDate = [tomorrow.toLocaleDateString()];
   const [location, setLocation] = useState<string>("Rio de Janeiro");
-  const [date, setDate] = useState<string>(today.toLocaleDateString());
+  const [date, setDate] = useState<string>(tomorrow.toLocaleDateString());
   const [hour, setHour] = useState<string>("18:00");
   const [people, setPeople] = useState<string>("2");
   const [place, setPlace] = useState<string>("Térreo");
@@ -45,12 +46,13 @@ function Reservation() {
   const lastStep = steps >= reservationSteps.length - 1;
 
   for (let i = 0; i < 5; i++) {
-    today.setDate(today.getDate() + 1);
-    arrDate.push(today.toLocaleDateString());
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    arrDate.push(tomorrow.toLocaleDateString());
   }
 
   async function handleSubmit() {
     setLoading(true);
+
     const newReservation = {
       location,
       date,
@@ -63,45 +65,45 @@ function Reservation() {
     const docRef = doc(db, "users", user.uid);
     let reservationDenied = false;
 
-    await getDoc(docRef)
-      .then((snapshot) => {
-        const reservations = snapshot.data()?.reservations;
+    try {
+      const snapshot = await getDoc(docRef);
+      const reservations = snapshot.data()?.reservations || [];
 
-        if (reservations.length > 1) {
-          toast.error("Você não pode ter mais de 2 reservas");
-          reservationDenied = true;
-          return;
-        }
-
-        reservations.forEach((value: any) => {
+      if (reservations.length >= 2) {
+        toast.error("Você não pode ter mais de 2 reservas");
+        reservationDenied = true;
+      } else {
+        for (const value of reservations) {
           if (value.date === newReservation.date) {
             toast.warn("Você já possui uma reserva para este dia!");
             reservationDenied = true;
-            return;
+            break;
           }
-        });
+        }
 
-        reservationsUpdated = [...reservations, newReservation];
-      })
-      .catch((err) => {
-        console.log("Erro ao buscar: " + err);
-      });
+        if (!reservationDenied) {
+          reservationsUpdated = [...reservations, newReservation];
+          await updateDoc(docRef, { reservations: reservationsUpdated });
 
-    if (reservationDenied) return;
-
-    await updateDoc(docRef, {
-      reservations: reservationsUpdated,
-    })
-      .then(() => {
-        toast.success(
-          `Reserva efetuada para o dia ${newReservation.date} às ${newReservation.hour}`,
-        );
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log("Error: " + err);
-      });
-    setLoading(false);
+          const updatedSnapshot = await getDoc(docRef);
+          const data = updatedSnapshot.data();
+          setUser({ uid: user.uid, ...data });
+          localStorage.setItem(
+            "@currentUser",
+            JSON.stringify({ uid: user.uid, ...data }),
+          );
+          toast.success(
+            `Reserva efetuada para o dia ${newReservation.date} às ${newReservation.hour}`,
+          );
+          navigate("/my-reservation");
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao processar reserva: ", err);
+      toast.error("Erro ao processar reserva.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   enum StepsAction {
@@ -132,15 +134,17 @@ function Reservation() {
               <IoIosArrowBack />
             </BackButton>
             <div className="res-text-box">
-              <h2>Olá, {user && user.name}!</h2>
+              <h2>Olá, {user && user.name.split(" ")[0]}!</h2>
               <span>Faça sua reserva e evite filas!</span>
             </div>
 
             <div className="res-info-box">{reservationSteps[steps]}</div>
 
             <NextButton
-              onClick={() =>
-                !lastStep ? handleSetSteps(StepsAction.NEXT) : handleSubmit()
+              onClick={async () =>
+                !lastStep
+                  ? handleSetSteps(StepsAction.NEXT)
+                  : await handleSubmit()
               }
             >
               {!loading ? (
