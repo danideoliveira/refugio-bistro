@@ -1,9 +1,10 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { useState, createContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { auth, db } from "../services/firebaseConnection";
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
@@ -17,12 +18,32 @@ function AuthProvider({ children }: any) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadUser() {
-      const currentUser = localStorage.getItem("@currentUser");
-      currentUser && setUser(JSON.parse(currentUser));
+    function checkLogin() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const docRef = doc(db, "users", user.uid);
+
+          await getDoc(docRef)
+            .then((snapshot) => {
+              const snapData = snapshot.data();
+              const data = {
+                uid: user.uid,
+                name: snapData?.name,
+                email: snapData?.email,
+                reservations: snapData?.reservations,
+              };
+              localStorage.clear();
+              localStorage.setItem("@currentUser", JSON.stringify(data));
+              setUser(data);
+            })
+            .catch((err) => {
+              console.log("Erro ao buscar: " + err);
+            });
+        }
+      });
     }
 
-    loadUser();
+    checkLogin();
   }, []);
 
   async function signUp(name: string, email: string, password: string) {
@@ -33,13 +54,13 @@ function AuthProvider({ children }: any) {
         const uid = value.user.uid;
 
         await setDoc(doc(db, "users", uid), {
-          name: name.split(" ")[0],
+          name,
           email,
           reservations: [],
         }).then(() => {
           const data: any = {
             uid,
-            name: name.split(" ")[0],
+            name,
             email,
             reservations: [],
           };
@@ -83,11 +104,10 @@ function AuthProvider({ children }: any) {
         await getDoc(userRef)
           .then((snapshot) => {
             const snapData = snapshot.data();
-            const firstName = snapData?.name.split(" ")[0];
 
             const data = {
               uid: value.user.uid,
-              name: firstName,
+              name: snapData?.name,
               email: snapData?.email,
               reservations: snapData?.reservations,
             };
@@ -138,9 +158,36 @@ function AuthProvider({ children }: any) {
     localStorage.setItem("@currentUser", JSON.stringify(data));
   }
 
+  function deleteAccount() {
+    const currentUser = auth.currentUser;
+
+    currentUser
+      ?.delete()
+      .then(async () => {
+        const docRef = doc(db, "users", user?.uid);
+        await deleteDoc(docRef);
+        setUser("");
+        localStorage.clear();
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log("Erro ao excluir a conta: " + err);
+        toast.error("Erro ao excluir a conta.");
+      });
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, setUser, signUp, signIn, logout, loading, setLoading }}
+      value={{
+        user,
+        setUser,
+        signUp,
+        signIn,
+        logout,
+        loading,
+        setLoading,
+        deleteAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>
