@@ -65,12 +65,13 @@ export const LocationInfo = (props: any) => {
 };
 
 export const GeneralInfo = (props: any) => {
-  const today = new Date();
-  const arrDate = [today.toLocaleDateString()];
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const arrDate = [tomorrow.toLocaleDateString()];
 
   for (let i = 0; i < 5; i++) {
-    today.setDate(today.getDate() + 1);
-    arrDate.push(today.toLocaleDateString());
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    arrDate.push(tomorrow.toLocaleDateString());
   }
 
   return (
