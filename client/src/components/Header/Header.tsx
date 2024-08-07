@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { images } from "../Images/Images";
 import { Container, StyledLink } from "./Header.styled";
 import { AuthContext } from "../../contexts/auth";
+import { FaUserCircle } from "react-icons/fa";
 
 function Header() {
-  const { user, logout } = useContext<any>(AuthContext);
+  const { user } = useContext<any>(AuthContext);
 
   return (
     <>
@@ -12,7 +13,7 @@ function Header() {
         <div className="header-box">
           <div className="header-logo">
             <img src={images.logo} alt="logo" className="logo" />
-            {user && <span>Olá, {user.name}!</span>}
+            {user && <span>Olá, {user.name.split(" ")[0]}!</span>}
           </div>
 
           <nav>
@@ -23,9 +24,13 @@ function Header() {
                 Login
               </StyledLink>
             ) : (
-              <button className="header-logout" onClick={logout}>
-                Sair
-              </button>
+              <>
+                <StyledLink to="/my-reservation">Minhas Reservas</StyledLink>
+                <StyledLink className="header-profile-button" to="/profile">
+                  <FaUserCircle />
+                  Meu Perfil
+                </StyledLink>
+              </>
             )}
           </nav>
         </div>
