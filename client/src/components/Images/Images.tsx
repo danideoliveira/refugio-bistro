@@ -25,6 +25,9 @@ import loginBackground from "../../assets/img/loginBackground.png";
 import reservationBackground from "../../assets/img/reservationBackground.png";
 import reservationBox from "../../assets/img/reservationBox.png";
 
+// Profile
+import profileBackground from "../../assets/img/profileBackground.png";
+
 export const images = {
   logo,
   logoLocation,
@@ -44,4 +47,5 @@ export const images = {
   loginBackground,
   reservationBackground,
   reservationBox,
+  profileBackground,
 };
