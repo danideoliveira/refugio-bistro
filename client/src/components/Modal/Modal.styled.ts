@@ -17,10 +17,13 @@ export const Container = styled.div`
     text-align: center;
   }
 
+  h2.small {
+    font-size: 2rem;
+  }
+
   & .button-box {
     ${setFlexbox("center", "center", "row")}
     width: 100%;
-    margin-top: 4rem;
   }
 
   & .modal-info {
@@ -40,6 +43,7 @@ export const Container = styled.div`
     border: none;
     background-color: darkred;
     cursor: pointer;
+    margin-top: 3rem;
 
     svg {
       color: #fff;
@@ -48,7 +52,7 @@ export const Container = styled.div`
 
   & .modal-box {
     position: fixed;
-    max-width: 600px;
+    max-width: 60rem;
     top: 15%;
     left: 0;
     right: 0;

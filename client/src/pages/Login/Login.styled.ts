@@ -12,4 +12,8 @@ export const Container = styled.section`
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
+
+  .box-inputs {
+    ${setFlexbox("center", "center", "column")}
+  }
 `;
