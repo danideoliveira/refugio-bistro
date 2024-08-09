@@ -9,13 +9,25 @@ export const Container = styled.form`
   width: 100%;
   padding: 5rem 0;
   gap: 5rem;
-  max-width: 40rem;
+  max-width: 60rem;
   background-color: ${palette.form_background};
   border-radius: 5px;
 
   .box-inputs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 3rem;
+
+    .full {
+      grid-area: 1 / 1 / 2 / 3;
+      width: auto;
+      max-width: none;
+    }
+  }
+
+  .box-inputs-flex {
     ${setFlexbox("center", "center", "column")}
-    gap: 0.5rem;
+    gap: 0;
   }
 
   .input-square {
@@ -45,9 +57,12 @@ export const Container = styled.form`
     width: 100%;
     font-size: 1.5rem;
     padding: 0.7rem 1rem;
-    border: none;
+    border: 1px solid #e3e3e3;
     border-radius: 5px;
-    box-shadow: 0px 2px 5px 0px rgb(0, 0, 0, 0.25);
+
+    &:focus {
+      outline: none;
+    }
 
     & + span {
       margin: 0.5rem 0;
