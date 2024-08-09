@@ -1,9 +1,19 @@
+import { ReactNode } from "react";
 import { Container } from "./Form.styled";
+import { SubmitHandler } from "react-hook-form";
 
-function Form({ children, onSubmit }: any) {
+interface IForm {
+  children: ReactNode;
+  onSubmit?: SubmitHandler<any>;
+  className: string;
+}
+
+function Form({ children, onSubmit, className }: IForm) {
   return (
     <>
-      <Container onSubmit={onSubmit}>{children}</Container>
+      <Container onSubmit={onSubmit} className={className}>
+        {children}
+      </Container>
     </>
   );
 }
