@@ -24,6 +24,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   reauthenticateWithCredential,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateEmail,
@@ -51,11 +52,7 @@ export interface IFirebaseErrors {
   message: string;
 }
 
-function AuthProvider({ children }: any) {
-  const [user, setUser] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const navigate: NavigateFunction = useNavigate();
-
+function checkFirebaseError(err: any): void {
   const firebaseErrors: Array<IFirebaseErrors> = [
     { code: "auth/weak-password", message: "Senha muito fraca!" },
     {
@@ -77,6 +74,16 @@ function AuthProvider({ children }: any) {
     },
     { code: "auth/user-not-found", message: "Usuário não encontrado!" },
   ];
+
+  firebaseErrors.forEach((currentError) => {
+    currentError.code === err.code && toast.error(currentError.message);
+  });
+}
+
+function AuthProvider({ children }: any) {
+  const [user, setUser] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate: NavigateFunction = useNavigate();
 
   useEffect(() => {
     function checkLogin(): void {
@@ -172,9 +179,7 @@ function AuthProvider({ children }: any) {
           });
         })
         .catch((err) => {
-          firebaseErrors.forEach((currentError) => {
-            currentError.code === err.code && toast.error(currentError.message);
-          });
+          checkFirebaseError(err);
         })
         .finally(() => setLoading(false));
     }
@@ -208,9 +213,7 @@ function AuthProvider({ children }: any) {
           });
       })
       .catch((err) => {
-        firebaseErrors.forEach((currentError) => {
-          currentError.code === err.code && toast.error(currentError.message);
-        });
+        checkFirebaseError(err);
       })
       .finally(() => setLoading(false));
   }
@@ -257,9 +260,7 @@ function AuthProvider({ children }: any) {
           });
       }
     } catch (err: any) {
-      firebaseErrors.forEach((currentError) => {
-        currentError.code === err.code && toast.error(currentError.message);
-      });
+      checkFirebaseError(err);
     } finally {
       setLoading(false);
     }
@@ -309,13 +310,24 @@ function AuthProvider({ children }: any) {
 
       toast.success("Perfil atualizado com sucesso!");
     } catch (err: any) {
-      firebaseErrors.forEach((currentError) => {
-        currentError.code === err.code && toast.error(currentError.message);
-      });
+      checkFirebaseError(err);
     } finally {
       setLoading(false);
     }
   };
+
+  async function resetPassword(email: string): Promise<void> {
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.info(`E-mail de redefinição de senha enviado para ${email}`);
+    } catch (err) {
+      checkFirebaseError(err);
+      console.log("Erro ao resetar senha: " + err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <AuthContext.Provider
@@ -328,8 +340,9 @@ function AuthProvider({ children }: any) {
         loading,
         setLoading,
         deleteAccount,
-        firebaseErrors,
+        checkFirebaseError,
         updateUser,
+        resetPassword,
       }}
     >
       {children}
