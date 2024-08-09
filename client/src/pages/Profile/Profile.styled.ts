@@ -15,11 +15,6 @@ export const Container = styled.section`
   position: relative;
   gap: 2rem;
 
-  form {
-    padding: 0;
-    max-width: 60rem;
-  }
-
   .box-profile {
     ${setFlexbox("center", "center", "column")}
     padding: 5rem;
@@ -31,8 +26,9 @@ export const Container = styled.section`
   }
 
   .box-inputs {
-    ${setFlexbox("center", "center", "column")}
-    gap: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 3rem;
   }
 
   .profile-loading {
@@ -47,8 +43,7 @@ export const Container = styled.section`
   }
 
   .input-square {
-    width: 25rem;
-    max-width: 25rem;
+    max-width: 21rem;
   }
 
   .profile-configuration {
@@ -92,7 +87,6 @@ export const Container = styled.section`
   .box-buttons {
     ${setFlexbox("center", "center", "row")}
     gap: 2rem;
-    margin-top: 5rem;
 
     .edit-button {
       ${setFlexbox("center", "center", "row")}
@@ -130,6 +124,49 @@ export const Container = styled.section`
 
     &:hover {
       filter: brightness(0.8);
+    }
+  }
+
+  .form-profile,
+  .form-profile-update {
+    padding: 0;
+    max-width: 60rem;
+  }
+
+  .modal-delete-account {
+    .modal-box {
+      max-width: 30rem;
+    }
+
+    .input-square {
+      width: 21rem;
+    }
+
+    form {
+      gap: 2rem;
+      padding: 0;
+      margin-top: 3rem;
+    }
+
+    form button {
+      width: 15rem;
+      margin-top: 0;
+    }
+  }
+
+  .modal-password {
+    .modal-box {
+      max-width: 30rem;
+    }
+
+    .input-square {
+      width: 21rem;
+    }
+
+    form {
+      gap: 2rem;
+      padding: 0;
+      margin-top: 3rem;
     }
   }
 `;
