@@ -1,39 +1,100 @@
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  CollectionReference,
+  deleteDoc,
+  doc,
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot,
+  getDoc,
+  getDocs,
+  orderBy,
+  Query,
+  query,
+  QueryDocumentSnapshot,
+  QuerySnapshot,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useState, createContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { auth, db } from "../services/firebaseConnection";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   signOut,
+  updateEmail,
+  User,
+  UserCredential,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import { formatCPF } from "../helpers/validateCpf";
+import { EmailAuthProvider } from "firebase/auth/web-extension";
 
 export const AuthContext = createContext({});
+
+interface IUserData {
+  uid?: string;
+  name: string;
+  cpf?: string;
+  email: string;
+  phone?: string;
+  password?: string;
+  reservations: Array<object>;
+}
+
+export interface IFirebaseErrors {
+  code: string;
+  message: string;
+}
 
 function AuthProvider({ children }: any) {
   const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
+
+  const firebaseErrors: Array<IFirebaseErrors> = [
+    { code: "auth/weak-password", message: "Senha muito fraca!" },
+    {
+      code: "auth/email-already-in-use",
+      message: "Este email já foi cadastrado!",
+    },
+    {
+      code: "auth/invalid-credential",
+      message: "Email ou Senha inválidos!",
+    },
+    {
+      code: "auth/missing-password",
+      message: "Preencha o campo de senha!",
+    },
+    { code: "auth/wrong-password", message: "Senha incorreta!" },
+    {
+      code: "auth/too-many-requests",
+      message: "Acesso temporariamente bloqueado. Tente novamente mais tarde!",
+    },
+    { code: "auth/user-not-found", message: "Usuário não encontrado!" },
+  ];
 
   useEffect(() => {
-    function checkLogin() {
-      onAuthStateChanged(auth, async (user) => {
+    function checkLogin(): void {
+      onAuthStateChanged(auth, async (user: User | null) => {
         if (user) {
-          const docRef = doc(db, "users", user.uid);
+          const docRef: DocumentReference = doc(db, "users", user.uid);
 
           await getDoc(docRef)
-            .then((snapshot) => {
-              const snapData = snapshot.data();
-              const data = {
+            .then((snapshot: DocumentSnapshot) => {
+              const snapData: DocumentData | undefined = snapshot.data();
+              const data: IUserData = {
                 uid: user.uid,
                 name: snapData?.name,
                 email: snapData?.email,
                 reservations: snapData?.reservations,
               };
               localStorage.clear();
-              localStorage.setItem("@currentUser", JSON.stringify(data));
+              storageUser(data);
               setUser(data);
             })
             .catch((err) => {
@@ -46,66 +107,92 @@ function AuthProvider({ children }: any) {
     checkLogin();
   }, []);
 
-  async function signUp(name: string, email: string, password: string) {
-    setLoading(true);
+  async function duplicatedCPF(cpf: string): Promise<boolean> {
+    const collectionRef: CollectionReference = collection(db, "users");
+    const formattedCPF: string = formatCPF(cpf);
 
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then(async (value: any) => {
-        const uid = value.user.uid;
+    const q: Query = query(
+      collectionRef,
+      orderBy("name", "desc"),
+      where("cpf", "==", formattedCPF),
+    );
 
-        await setDoc(doc(db, "users", uid), {
-          name,
-          email,
-          reservations: [],
-        }).then(() => {
-          const data: any = {
-            uid,
-            name,
-            email,
-            reservations: [],
-          };
+    const querySnapshot: boolean = await getDocs(q).then(
+      (snapshot: QuerySnapshot) => {
+        let isDuplicated: boolean = false;
 
-          setUser(data);
-          storageUser(data);
-          navigate("/login");
-          toast.success("Usuário cadastrado com sucesso!");
+        snapshot.forEach((doc: QueryDocumentSnapshot) => {
+          if (formatCPF(doc.data().cpf) === formattedCPF) {
+            isDuplicated = true;
+            return;
+          }
         });
-      })
-      .catch((err) => {
-        const errors = [
-          { code: "auth/weak-password", message: "Senha muito fraca!" },
-          { code: "auth/email-already-in-use", message: "Email já existe" },
-          {
-            code: "auth/invalid-credential",
-            message: "Email ou Senha inválido!",
-          },
-          {
-            code: "auth/missing-password",
-            message: "Preencha o campo de senha!",
-          },
-        ];
-
-        errors.forEach((currentError) => {
-          currentError.code === err.code && toast.error(currentError.message);
-        });
-      })
-      .finally(() => setLoading(false));
+        return isDuplicated;
+      },
+    );
+    return querySnapshot;
   }
 
-  async function signIn(email: string, password: string) {
+  async function signUp(
+    name: string,
+    cpf: string,
+    email: string,
+    phone: string,
+    password: string,
+  ): Promise<void> {
+    setLoading(true);
+
+    if (await duplicatedCPF(cpf)) {
+      toast.error("Este CPF já foi cadastrado!");
+      setLoading(false);
+      return;
+    } else {
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then(async (value: UserCredential) => {
+          const uid: string = value.user.uid;
+
+          await setDoc(doc(db, "users", uid), {
+            name,
+            email,
+            cpf: formatCPF(cpf),
+            phone,
+            reservations: [],
+          }).then(() => {
+            const data: IUserData = {
+              uid,
+              name,
+              email,
+              reservations: [],
+            };
+
+            setUser(data);
+            storageUser(data);
+            navigate("/");
+            toast.success("Usuário cadastrado com sucesso!");
+          });
+        })
+        .catch((err) => {
+          firebaseErrors.forEach((currentError) => {
+            currentError.code === err.code && toast.error(currentError.message);
+          });
+        })
+        .finally(() => setLoading(false));
+    }
+    setLoading(false);
+  }
+
+  async function signIn(email: string, password: string): Promise<void> {
     setLoading(true);
 
     await signInWithEmailAndPassword(auth, email, password)
-      .then(async (value: any) => {
-        toast.success("Usuário logado!");
-
-        const userRef = doc(db, "users", value.user.uid);
+      .then(async (value: UserCredential) => {
+        const userRef: DocumentReference = doc(db, "users", value.user.uid);
 
         await getDoc(userRef)
-          .then((snapshot) => {
+          .then((snapshot: DocumentSnapshot) => {
             const snapData = snapshot.data();
 
-            const data = {
+            const data: IUserData = {
               uid: value.user.uid,
               name: snapData?.name,
               email: snapData?.email,
@@ -121,30 +208,14 @@ function AuthProvider({ children }: any) {
           });
       })
       .catch((err) => {
-        const errors = [
-          { code: "auth/weak-password", message: "Senha muito fraca!" },
-          {
-            code: "auth/email-already-in-use",
-            message: "Este email já foi cadastrado!!",
-          },
-          {
-            code: "auth/invalid-credential",
-            message: "Email ou Senha inválido!",
-          },
-          {
-            code: "auth/missing-password",
-            message: "Preencha o campo de senha!",
-          },
-        ];
-
-        errors.forEach((currentError) => {
+        firebaseErrors.forEach((currentError) => {
           currentError.code === err.code && toast.error(currentError.message);
         });
       })
       .finally(() => setLoading(false));
   }
 
-  async function logout() {
+  async function logout(): Promise<void> {
     await signOut(auth)
       .then(() => {
         setUser("");
@@ -154,27 +225,97 @@ function AuthProvider({ children }: any) {
       .catch((err) => console.log("Erro ao deslogar! " + err));
   }
 
-  function storageUser(data: any) {
+  function storageUser(data: any): void {
     localStorage.setItem("@currentUser", JSON.stringify(data));
   }
 
-  function deleteAccount() {
-    const currentUser = auth.currentUser;
+  async function deleteAccount(password: string): Promise<void> {
+    setLoading(true);
+    const currentUser: User | null = auth.currentUser;
 
-    currentUser
-      ?.delete()
-      .then(async () => {
-        const docRef = doc(db, "users", user?.uid);
-        await deleteDoc(docRef);
-        setUser("");
-        localStorage.clear();
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log("Erro ao excluir a conta: " + err);
-        toast.error("Erro ao excluir a conta.");
+    try {
+      if (currentUser) {
+        const credential = EmailAuthProvider.credential(
+          currentUser.email!,
+          password,
+        );
+
+        await reauthenticateWithCredential(currentUser, credential);
+
+        currentUser
+          ?.delete()
+          .then(async () => {
+            const docRef: DocumentReference = doc(db, "users", user?.uid);
+            await deleteDoc(docRef);
+            setUser("");
+            localStorage.clear();
+            navigate("/");
+          })
+          .catch((err) => {
+            console.log("Erro ao excluir a conta: " + err);
+            toast.error("Erro ao excluir a conta.");
+          });
+      }
+    } catch (err: any) {
+      firebaseErrors.forEach((currentError) => {
+        currentError.code === err.code && toast.error(currentError.message);
       });
+    } finally {
+      setLoading(false);
+    }
   }
+
+  const updateUser = async (
+    password: string,
+    newName: string,
+    newEmail: string,
+    newPhone: string,
+  ): Promise<void> => {
+    setLoading(true);
+    try {
+      if (auth.currentUser) {
+        const credential = EmailAuthProvider.credential(
+          auth.currentUser.email!,
+          password,
+        );
+
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await updateEmail(auth.currentUser, newEmail);
+      }
+
+      const docRef = doc(db, "users", user.uid);
+      await updateDoc(docRef, {
+        name: newName,
+        email: newEmail,
+        phone: newPhone,
+      });
+
+      setUser((prev: any) => ({
+        ...prev,
+        name: newName,
+        email: newEmail,
+        phone: newPhone,
+      }));
+
+      localStorage.setItem(
+        "@currentUser",
+        JSON.stringify({
+          ...user,
+          name: newName,
+          email: newEmail,
+          phone: newPhone,
+        }),
+      );
+
+      toast.success("Perfil atualizado com sucesso!");
+    } catch (err: any) {
+      firebaseErrors.forEach((currentError) => {
+        currentError.code === err.code && toast.error(currentError.message);
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AuthContext.Provider
@@ -187,6 +328,8 @@ function AuthProvider({ children }: any) {
         loading,
         setLoading,
         deleteAccount,
+        firebaseErrors,
+        updateUser,
       }}
     >
       {children}
