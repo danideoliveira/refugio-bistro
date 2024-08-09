@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { images } from "../Images/Images";
-import { Container, StyledLink } from "./Header.styled";
+import { Container, StyledHashLink, StyledLink } from "./Header.styled";
 import { AuthContext } from "../../contexts/auth";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -18,7 +18,9 @@ function Header() {
 
           <nav>
             <StyledLink to="/">Início</StyledLink>
-            <StyledLink to="#cardapio">Cardápio</StyledLink>
+            <StyledHashLink smooth to="/#menu">
+              Cardápio
+            </StyledHashLink>
             {!user ? (
               <StyledLink to="/login" className="header-login">
                 Login

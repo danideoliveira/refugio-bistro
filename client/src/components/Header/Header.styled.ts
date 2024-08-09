@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { setFlexbox } from "../../helpers/mixins";
 import { Link } from "react-router-dom";
 import { palette } from "../../helpers/palette";
+import { HashLink } from "react-router-hash-link";
 
 export const Container = styled.header`
   ${setFlexbox("space-around", "center", "row")}
@@ -54,6 +55,21 @@ export const StyledLink = styled(Link)`
     background: ${palette.header_link_color};
     color: ${palette.header_link_background};
   }
+
+  &:hover {
+    background: ${palette.header_link_color};
+    color: ${palette.header_link_background};
+  }
+`;
+
+export const StyledHashLink = styled(HashLink)`
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: 0.3s all ease;
+  color: ${palette.header_link_color};
+  font-weight: 500;
+  border-radius: 5px;
 
   &:hover {
     background: ${palette.header_link_color};
