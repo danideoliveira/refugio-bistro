@@ -106,53 +106,53 @@ function MyReservation() {
           <StyledLink to="/reservation">+ Nova Reserva</StyledLink>
         )}
       </Reservations>
-      {showModal && (
-        <Modal>
-          <button className="modal-close" onClick={() => setShowModal(false)}>
-            <IoIosArrowBack />
+      <Modal
+        condition={showModal}
+        setCondition={setShowModal}
+        className="modal-my-reservation"
+      >
+        <button className="modal-close" onClick={() => setShowModal(false)}>
+          <IoIosArrowBack />
+        </button>
+        <h2>Deseja cancelar a sua reserva?</h2>
+
+        <ReviewGrid className="modal-info">
+          <InfoSquare>
+            <label>Data</label>
+            <p>{chosenReservation.date}</p>
+          </InfoSquare>
+
+          <InfoSquare>
+            <label>Horário</label>
+            <p>{chosenReservation.hour}</p>
+          </InfoSquare>
+
+          <InfoSquare>
+            <label>Pessoas</label>
+            <p>{chosenReservation.people}</p>
+          </InfoSquare>
+
+          <InfoSquare>
+            <label>Ambiente</label>
+            <p>{chosenReservation.place}</p>
+          </InfoSquare>
+
+          <InfoSquare>
+            <label>Unidade</label>
+            <p>{chosenReservation.location}</p>
+          </InfoSquare>
+        </ReviewGrid>
+
+        <div className="button-box">
+          <button
+            className="modal-button-delete"
+            onClick={async () => await handleDeleteRow(chosenReservation.date)}
+          >
+            <TiDelete />
+            Cancelar reserva
           </button>
-          <h2>Deseja cancelar a sua reserva?</h2>
-
-          <ReviewGrid className="modal-info">
-            <InfoSquare>
-              <label>Data</label>
-              <p>{chosenReservation.date}</p>
-            </InfoSquare>
-
-            <InfoSquare>
-              <label>Horário</label>
-              <p>{chosenReservation.hour}</p>
-            </InfoSquare>
-
-            <InfoSquare>
-              <label>Pessoas</label>
-              <p>{chosenReservation.people}</p>
-            </InfoSquare>
-
-            <InfoSquare>
-              <label>Ambiente</label>
-              <p>{chosenReservation.place}</p>
-            </InfoSquare>
-
-            <InfoSquare>
-              <label>Unidade</label>
-              <p>{chosenReservation.location}</p>
-            </InfoSquare>
-          </ReviewGrid>
-
-          <div className="button-box">
-            <button
-              className="modal-button-delete"
-              onClick={async () =>
-                await handleDeleteRow(chosenReservation.date)
-              }
-            >
-              <TiDelete />
-              Cancelar reserva
-            </button>
-          </div>
-        </Modal>
-      )}
+        </div>
+      </Modal>
     </Container>
   );
 }
