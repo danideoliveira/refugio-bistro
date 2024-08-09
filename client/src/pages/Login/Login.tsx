@@ -16,7 +16,7 @@ const schema = z.object({
 });
 
 function Login() {
-  const { signIn, loading } = useContext<any>(AuthContext);
+  const { signIn, loading }: any = useContext(AuthContext);
 
   const {
     register,
@@ -27,14 +27,14 @@ function Login() {
   });
 
   const onSubmit = async (data: any) => {
-    const { email, password } = data;
+    const { email, password }: { email: string; password: string } = data;
     await signIn(email, password);
   };
 
   return (
     <>
       <Container>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)} className="form-login">
           <h2>Login</h2>
 
           <div className="box-inputs">
