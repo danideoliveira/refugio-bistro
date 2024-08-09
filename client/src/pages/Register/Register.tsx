@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { StyledLink, StyledLoading } from "../../components/Form/Form.styled";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
+import { validateCPF } from "../../helpers/validateCpf";
 
 const schema = z.object({
   name: z.string().min(1, "O campo nome é obrigatório."),
@@ -14,6 +15,15 @@ const schema = z.object({
     .email("Digite um email válido")
     .min(1, "O email é obrigatório"),
   password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+  cpf: z.string().refine((cpf) => validateCPF(cpf), {
+    message: "CPF inválido",
+  }),
+  phone: z
+    .string()
+    .regex(
+      /^\(?\d{2}\)?[-.\s]?\d{5}[-.\s]?\d{4}$/,
+      "Digite um número de celular válido",
+    ),
 });
 
 function Register() {
@@ -28,38 +38,89 @@ function Register() {
   });
 
   async function onSubmit(data: any) {
-    const { name, email, password } = data;
-    await signUp(name, email, password);
+    const { name, cpf, email, phone, password } = data;
+    await signUp(name, cpf, email, phone, password);
   }
 
   return (
     <>
       <Container>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <h2>Cadastrar-se</h2>
+        <Form onSubmit={handleSubmit(onSubmit)} className="form-register">
+          <h2>Cadastre-se</h2>
 
           <div className="box-inputs">
-            <div className="input-square">
+            <div className="input-square full">
               <label>Nome Completo</label>
               <input {...register("name")} />
-              <span className="error">
-                {errors?.name?.message?.toString() || ""}
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.name?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.name?.message?.toString() || "default"}
+              </span>
+            </div>
+
+            <div className="input-square">
+              <label>CPF</label>
+              <input {...register("cpf")} />
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.cpf?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.cpf?.message?.toString() || "default"}
               </span>
             </div>
 
             <div className="input-square">
               <label>Email</label>
               <input {...register("email")} />
-              <span className="error">
-                {errors?.email?.message?.toString() || ""}
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.email?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.email?.message?.toString() || "default"}
+              </span>
+            </div>
+
+            <div className="input-square">
+              <label>Telefone</label>
+              <input {...register("phone")} />
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.phone?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.phone?.message?.toString() || "default"}
               </span>
             </div>
 
             <div className="input-square">
               <label>Senha</label>
               <input type="password" {...register("password")} />
-              <span className="error">
-                {errors?.password?.message?.toString() || ""}
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.password?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.password?.message?.toString() || "default"}
               </span>
             </div>
           </div>
