@@ -1,46 +1,83 @@
 import { useContext, useEffect, useState } from "react";
 import Form from "../../components/Form/Form";
 import { Container } from "./Profile.styled";
-import { AuthContext } from "../../contexts/auth";
+import { AuthContext, IFirebaseErrors } from "../../contexts/auth";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
-import { toast } from "react-toastify";
 import { StyledLoading } from "../../components/Form/Form.styled";
 import { MdEdit } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import Modal from "../../components/Modal/Modal";
-import { IoIosArrowBack } from "react-icons/io";
 import { FaTrashCan } from "react-icons/fa6";
+import { validateCPF } from "../../helpers/validateCpf";
 
 function Profile() {
-  const { user, setUser, logout, deleteAccount } = useContext(AuthContext) as {
-    user: { uid: string; name: string; email: string };
-    setUser: (user: any) => void;
-    logout: () => void;
-    deleteAccount: () => void;
-  };
+  const { user, logout, deleteAccount, updateUser, loading, setLoading } =
+    useContext(AuthContext) as {
+      user: { uid: string; name: string; email: string };
+      setUser: (user: any) => void;
+      logout: () => void;
+      deleteAccount: (password: string) => void;
+      firebaseErrors: Array<IFirebaseErrors>;
+      updateUser: (
+        password: string,
+        newName: string,
+        newEmail: string,
+        newPhone: string,
+      ) => Promise<void>;
+      loading: boolean;
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    };
+  const [password, setPassword] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
   const [newEmail, setNewEmail] = useState<string>("");
+  const [newCPF, setNewCPF] = useState<string>("");
+  const [newPhone, setNewPhone] = useState<string>("");
   const [disabledInput, setDisabledInput] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModalPassword, setShowModalPassword] = useState<boolean>(false);
 
   const schema = z.object({
     name: z.string().min(1, "O campo nome é obrigatório!").default(user?.name),
     email: z.string().email("Digite um email válido").default(user?.email),
+    cpf: z
+      .string()
+      .refine((cpf) => validateCPF(cpf), {
+        message: "CPF inválido",
+      })
+      .optional(),
+    phone: z
+      .string()
+      .regex(
+        /^\(?\d{2}\)?[-.\s]?\d{5}[-.\s]?\d{4}$/,
+        "Digite um número de celular válido",
+      )
+      .optional(),
+    password: z.string(),
   });
 
   type FormData = z.infer<typeof schema>;
   useEffect(() => {
-    if (user?.name) {
-      setNewName(user.name);
-      setNewEmail(user.email);
+    if (!user?.uid) return;
+    async function currentUser() {
+      const docRef = doc(db, "users", user.uid);
+      await getDoc(docRef).then((snapshot) => {
+        const data = snapshot.data();
+        if (data?.name) {
+          setNewName(data?.name);
+          setNewCPF(data?.cpf);
+          setNewEmail(data?.email);
+          setNewPhone(data?.phone);
+        }
+      });
     }
+
+    currentUser();
   }, [user]);
 
   const {
@@ -51,28 +88,12 @@ function Profile() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async () => {
-    setLoading(true);
-    try {
-      const docRef = doc(db, "users", user.uid);
-      await updateDoc(docRef, {
-        name: newName,
-        email: newEmail,
-      });
-      setUser((prev: any) => ({ ...prev, name: newName, email: newEmail }));
-      localStorage.setItem(
-        "@currentUser",
-        JSON.stringify({ ...user, name: newName, email: newEmail }),
-      );
-      toast.success("Perfil atualizado com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao atualizar perfil.");
-      console.error("Erro ao atualizar perfil: ", error);
-    } finally {
-      setLoading(false);
-      setDisabledInput(true);
-    }
-  };
+  function handleUpdateUser(): void {
+    updateUser(password, newName, newEmail, newPhone);
+    setPassword("");
+    setDisabledInput(true);
+    setShowModalPassword(false);
+  }
 
   return (
     <Container>
@@ -94,7 +115,7 @@ function Profile() {
                 <IoSettingsSharp />
               </button>
             </div>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form className="form-profile">
               <h2>Meu Perfil</h2>
               <div className="box-inputs">
                 <div className="input-square">
@@ -105,7 +126,36 @@ function Profile() {
                     disabled={disabledInput}
                     onChange={(e) => setNewName(e.target.value)}
                   />
-                  {errors.name && <span>{errors.name.message}</span>}
+                  <span
+                    className="error"
+                    style={{
+                      visibility: errors?.name?.message?.toString()
+                        ? "visible"
+                        : "hidden",
+                    }}
+                  >
+                    {errors?.name?.message?.toString() || "default"}
+                  </span>
+                </div>
+
+                <div className="input-square">
+                  <label>CPF</label>
+                  <input
+                    value={newCPF}
+                    {...register("cpf")}
+                    disabled={true}
+                    onChange={(e) => setNewCPF(e.target.value)}
+                  />
+                  <span
+                    className="error"
+                    style={{
+                      visibility: errors?.cpf?.message?.toString()
+                        ? "visible"
+                        : "hidden",
+                    }}
+                  >
+                    {errors?.cpf?.message?.toString() || "default"}
+                  </span>
                 </div>
 
                 <div className="input-square">
@@ -116,7 +166,36 @@ function Profile() {
                     disabled={disabledInput}
                     onChange={(e) => setNewEmail(e.target.value)}
                   />
-                  {errors.email && <span>{errors.email.message}</span>}
+                  <span
+                    className="error"
+                    style={{
+                      visibility: errors?.email?.message?.toString()
+                        ? "visible"
+                        : "hidden",
+                    }}
+                  >
+                    {errors?.email?.message?.toString() || "default"}
+                  </span>
+                </div>
+
+                <div className="input-square">
+                  <label>Telefone</label>
+                  <input
+                    value={newPhone}
+                    {...register("phone")}
+                    disabled={disabledInput}
+                    onChange={(e) => setNewPhone(e.target.value)}
+                  />
+                  <span
+                    className="error"
+                    style={{
+                      visibility: errors?.phone?.message?.toString()
+                        ? "visible"
+                        : "hidden",
+                    }}
+                  >
+                    {errors?.phone?.message?.toString() || "default"}
+                  </span>
                 </div>
               </div>
               <div className="box-buttons">
@@ -129,26 +208,31 @@ function Profile() {
                   </span>
                 ) : (
                   <button
-                    type="submit"
                     className="edit-button"
+                    type="button"
                     disabled={loading}
+                    onClick={() => setShowModalPassword(true)}
                   >
-                    {loading ? (
-                      <StyledLoading />
-                    ) : (
-                      <>
-                        <FaSave /> Salvar
-                      </>
-                    )}
+                    Prosseguir
                   </button>
                 )}
-                <button
-                  className="logout-button"
-                  type="button"
-                  onClick={logout}
-                >
-                  Sair
-                </button>
+                {disabledInput ? (
+                  <button
+                    className="logout-button"
+                    type="button"
+                    onClick={logout}
+                  >
+                    Sair
+                  </button>
+                ) : (
+                  <button
+                    className="logout-button"
+                    type="button"
+                    onClick={() => setDisabledInput(true)}
+                  >
+                    Cancelar
+                  </button>
+                )}
               </div>
             </Form>
           </>
@@ -160,20 +244,105 @@ function Profile() {
         )}
       </div>
 
-      {showModal && (
-        <Modal>
-          <button className="modal-close" onClick={() => setShowModal(false)}>
-            <IoIosArrowBack />
-          </button>
-
-          <h2>Tem certeza que deseja excluir sua conta?</h2>
+      <Modal
+        condition={showModal}
+        setCondition={setShowModal}
+        className="modal-delete-account"
+      >
+        <Form
+          onSubmit={handleSubmit(() => deleteAccount(password))}
+          className="form-delete-account"
+        >
+          <div className="box-inputs-flex">
+            <div className="input-square">
+              <label>Digite sua senha</label>
+              <input
+                {...register("password")}
+                value={password}
+                onChange={(e: any) => {
+                  setPassword(e.target.value);
+                }}
+                type="password"
+              />
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.password?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.password?.message?.toString() || "default"}
+              </span>
+            </div>
+          </div>
           <div className="button-box">
-            <button className="modal-button-delete" onClick={deleteAccount}>
-              <FaTrashCan /> Excluir conta
+            <button
+              className="modal-button-delete"
+              onClick={() => {
+                setLoading(true);
+                deleteAccount(password);
+                setLoading(false);
+              }}
+            >
+              {loading ? (
+                <StyledLoading />
+              ) : (
+                <>
+                  <FaTrashCan /> Excluir conta
+                </>
+              )}
             </button>
           </div>
-        </Modal>
-      )}
+        </Form>
+      </Modal>
+
+      <Modal
+        condition={showModalPassword}
+        setCondition={setShowModalPassword}
+        className="modal-password"
+      >
+        <Form
+          onSubmit={handleSubmit(handleUpdateUser)}
+          className="form-profile-update"
+        >
+          <div className="box-inputs-flex">
+            <div className="input-square">
+              <label>Digite sua senha</label>
+              <input
+                {...register("password")}
+                value={password}
+                onChange={(e: any) => {
+                  setPassword(e.target.value);
+                }}
+                type="password"
+              />
+              <span
+                className="error"
+                style={{
+                  visibility: errors?.password?.message?.toString()
+                    ? "visible"
+                    : "hidden",
+                }}
+              >
+                {errors?.password?.message?.toString() || "default"}
+              </span>
+            </div>
+          </div>
+
+          <div className="box-buttons">
+            <button className="edit-button">
+              {loading ? (
+                <StyledLoading />
+              ) : (
+                <>
+                  <FaSave /> Salvar
+                </>
+              )}
+            </button>
+          </div>
+        </Form>
+      </Modal>
     </Container>
   );
 }
