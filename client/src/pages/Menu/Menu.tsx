@@ -4,7 +4,7 @@ import { Container, Content, Title } from "./Menu.styled";
 function Menu() {
   return (
     <>
-      <Container>
+      <Container id="menu">
         <div className="box">
           <div className="menu-left">
             <Carousel />
