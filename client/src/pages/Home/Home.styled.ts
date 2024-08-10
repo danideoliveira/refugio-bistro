@@ -54,9 +54,9 @@ export const Button = styled(Link)`
   font-size: 1.6rem;
   font-weight: 600;
   color: ${palette.home_button_color};
-  background: ${palette.home_button_background};
+  background: transparent;
   border-radius: 5px;
-  border: none;
+  border: 2px solid ${palette.home_button_color};
   padding: 1rem;
   cursor: pointer;
   transition: 0.3s all ease;
@@ -64,7 +64,7 @@ export const Button = styled(Link)`
   text-align: center;
 
   &:hover {
-    background: ${palette.home_button_color};
-    color: ${palette.home_button_background};
+    background: ${palette.home_button_background};
+    color: #0c0c0c;
   }
 `;

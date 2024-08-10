@@ -38,7 +38,7 @@ export const palette = {
 
   home_title_color: colors.beige.v3,
   home_text_color: colors.beige.v3,
-  home_button_color: colors.green.v1,
+  home_button_color: colors.beige.v3,
   home_button_background: colors.beige.v3,
 
   menu_background: colors.black.v1,
