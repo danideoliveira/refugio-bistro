@@ -12,4 +12,10 @@ export const Container = styled.section`
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
+
+  .form-register {
+    max-width: 50rem;
+    padding: 3rem 0;
+    gap: 3rem;
+  }
 `;

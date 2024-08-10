@@ -19,7 +19,7 @@ export const Container = styled.section`
     ${setFlexbox("center", "center", "column")}
     padding: 5rem;
     width: 90%;
-    max-width: 60rem;
+    max-width: 50rem;
     border-radius: 5px;
     background-color: ${palette.form_background};
     position: relative;

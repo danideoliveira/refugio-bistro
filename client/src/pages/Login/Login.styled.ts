@@ -27,6 +27,10 @@ export const Container = styled.section`
     text-decoration: underline;
   }
 
+  .form-login {
+    max-width: 30rem;
+  }
+
   .modal-reset-password {
     .modal-box {
       max-width: 30rem;

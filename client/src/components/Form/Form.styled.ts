@@ -32,7 +32,7 @@ export const Container = styled.form`
 
   .input-square {
     ${setFlexbox("center", "flex-start", "column")}
-    width: 21rem;
+    width: 100%;
     max-width: 21rem;
     gap: 0.5rem;
   }

@@ -13,7 +13,7 @@ export const Container = styled.div`
     padding: 1rem;
     gap: 2rem;
     cursor: pointer;
-    box-shadow: 0px 2px 5px 0px rgb(0, 0, 0, 0.25);
+    border: 1px solid #efefef;
     position: relative;
   }
 
