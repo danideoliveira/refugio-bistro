@@ -4,6 +4,7 @@ import {
   Container,
   MenuFooter,
   SocialMedia,
+  StyledHashLink,
   StyledLink,
 } from "./Footer.styled";
 import { images } from "../Images/Images";
@@ -25,9 +26,11 @@ function Footer() {
           <span>Menu</span>
           <nav>
             <StyledLink to="/">Início</StyledLink>
-            <StyledLink to="/">Cardápio</StyledLink>
-            <StyledLink to="/">Unidades</StyledLink>
-            <StyledLink to="/">Reservas</StyledLink>
+            <StyledHashLink smooth to="/#menu">
+              Cardápio
+            </StyledHashLink>
+            <StyledLink to="/my-reservation">Reservas</StyledLink>
+            <StyledLink to="/profile">Perfil</StyledLink>
           </nav>
           <a href="#" className="footer-copy">
             Daniel de Oliveira Santos &copy; 2024

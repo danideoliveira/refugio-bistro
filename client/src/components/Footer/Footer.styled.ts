@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { setFlexbox } from "../../helpers/mixins";
 import { Link } from "react-router-dom";
 import { palette } from "../../helpers/palette";
+import { HashLink } from "react-router-hash-link";
 
 export const Container = styled.footer`
   ${setFlexbox("center", "center", "column")}
@@ -77,6 +78,13 @@ export const BoxLogo = styled.div`
 `;
 
 export const StyledLink = styled(Link)`
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: ${palette.footer_text_color};
+`;
+
+export const StyledHashLink = styled(HashLink)`
   text-decoration: none;
   font-size: 1.4rem;
   font-weight: 500;
