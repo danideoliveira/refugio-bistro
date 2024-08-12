@@ -36,6 +36,22 @@ export const Container = styled.div`
     );
     position: absolute;
   }
+
+  @media screen and (max-width: 780px) {
+    .home-box {
+      align-items: center;
+    }
+
+    .home-content {
+      width: 75%;
+      text-align: center;
+    }
+
+    h1 {
+      width: 100%;
+      text-align: center;
+    }
+  }
 `;
 
 export const Title = styled.h1`

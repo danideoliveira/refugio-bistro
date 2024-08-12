@@ -50,6 +50,21 @@ export const Container = styled.div`
       color: ${palette.carousel_button_background};
     }
   }
+
+  @media screen and (max-width: 780px) {
+    align-items: center;
+  }
+
+  @media screen and (max-width: 650px) {
+    .slick-prev,
+    .slick-next {
+      display: none !important;
+    }
+
+    .carousel-image img {
+      width: 150%;
+    }
+  }
 `;
 
 export const StyledSlider = styled(Slider)`
@@ -64,6 +79,10 @@ export const StyledSlider = styled(Slider)`
     color: ${palette.carousel_text_color};
     font-size: 1.8rem;
     font-weight: 600;
+  }
+
+  @media screen and (max-width: 570px) {
+    max-width: 30rem;
   }
 `;
 

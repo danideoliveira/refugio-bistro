@@ -63,6 +63,14 @@ export const Box = styled.div`
     ${setFlexbox("center", "center", "column")}
     gap: 2rem;
   }
+
+  @media screen and (max-width: 780px) {
+    width: 90%;
+
+    .res-image {
+      display: none;
+    }
+  }
 `;
 
 export const BackButton = styled.button`
@@ -129,6 +137,10 @@ export const ReviewGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+
+  @media screen and (max-width: 780px) {
+    gap: 0;
+  }
 `;
 
 export const InfoSquare = styled.div`

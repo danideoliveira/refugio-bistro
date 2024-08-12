@@ -17,6 +17,7 @@ export const Container = styled.form`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem 3rem;
+    min-width: 90%;
 
     .full {
       grid-area: 1 / 1 / 2 / 3;
@@ -48,14 +49,14 @@ export const Container = styled.form`
   }
 
   label {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: ${palette.form_text_color};
   }
 
   input {
     width: 100%;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     padding: 0.7rem 1rem;
     border: 1px solid #e3e3e3;
     border-radius: 5px;
@@ -74,12 +75,12 @@ export const Container = styled.form`
 
   button {
     ${setFlexbox("center", "center", "row")}
-    padding: 0.5rem 2rem;
+    padding: 1rem 2rem;
     height: 3rem;
     width: 10rem;
     border: none;
     border-radius: 5px;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     background-color: ${palette.form_button_background};
     color: ${palette.form_button_color};
     font-weight: 600;
@@ -93,7 +94,7 @@ export const Container = styled.form`
 `;
 
 export const StyledLink = styled(Link)`
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 500;
   color: ${palette.form_text_color};
   text-decoration: none;

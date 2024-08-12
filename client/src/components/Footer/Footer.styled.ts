@@ -15,6 +15,21 @@ export const Container = styled.footer`
     ${setFlexbox("space-evenly", "center", "row")}
     width: 90%;
   }
+
+  @media screen and (max-width: 780px) {
+    .footer-box {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .footer-box div {
+      width: 100%;
+    }
+
+    .footer-box nav {
+      flex-direction: column;
+    }
+  }
 `;
 
 export const SocialMedia = styled.div`
@@ -38,6 +53,14 @@ export const SocialMedia = styled.div`
     font-size: 2.5rem;
     color: ${palette.footer_text_color};
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 780px) {
+    align-items: center;
+
+    .footer-media {
+      justify-content: center;
+    }
   }
 `;
 
@@ -64,6 +87,14 @@ export const MenuFooter = styled.div`
     font-weight: 500;
     color: ${palette.footer_text_color};
   }
+
+  @media screen and (max-width: 780px) {
+    margin: 2rem 0;
+
+    span {
+      margin-bottom: 2rem;
+    }
+  }
 `;
 
 export const BoxLogo = styled.div`
@@ -74,6 +105,10 @@ export const BoxLogo = styled.div`
   img {
     border-radius: 50%;
     width: 5rem;
+  }
+
+  @media screen and (max-width: 780px) {
+    display: none;
   }
 `;
 

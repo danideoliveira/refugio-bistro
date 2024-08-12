@@ -102,17 +102,17 @@ function Profile() {
           <>
             <div className="profile-configuration">
               <button
+                className="configuration-icon"
+                onClick={() => setShowSettings(showSettings ? false : true)}
+              >
+                <IoSettingsSharp />
+              </button>
+              <button
                 className="delete-account"
                 style={{ display: showSettings ? "flex" : "none" }}
                 onClick={() => setShowModal(true)}
               >
                 Deletar conta
-              </button>
-              <button
-                className="configuration-icon"
-                onClick={() => setShowSettings(showSettings ? false : true)}
-              >
-                <IoSettingsSharp />
               </button>
             </div>
             <Form className="form-profile">

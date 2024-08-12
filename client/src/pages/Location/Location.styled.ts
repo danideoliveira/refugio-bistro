@@ -24,6 +24,23 @@ export const Container = styled.section`
     right: 0;
     bottom: 0;
   }
+
+  @media screen and (max-width: 780px) {
+    max-height: none;
+
+    .location-box {
+      flex-direction: column;
+      gap: 5rem;
+    }
+
+    .location-box div {
+      width: 95%;
+    }
+
+    .button-list button {
+      width: 25rem;
+    }
+  }
 `;
 
 export const LeftContent = styled.div`

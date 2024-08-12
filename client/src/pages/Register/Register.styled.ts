@@ -18,4 +18,16 @@ export const Container = styled.section`
     padding: 3rem 0;
     gap: 3rem;
   }
+
+  @media screen and (max-width: 780px) {
+    height: auto;
+    padding: 2rem 0;
+
+    .form-register {
+      max-width: 30rem;
+    }
+    .form-register .box-inputs {
+      ${setFlexbox("center", "center", "column")}
+    }
+  }
 `;

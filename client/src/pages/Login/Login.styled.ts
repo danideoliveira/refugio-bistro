@@ -19,7 +19,7 @@ export const Container = styled.section`
   }
 
   .button-reset-password {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 500;
     color: ${palette.form_text_color};
     text-decoration: none;

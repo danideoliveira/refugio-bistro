@@ -52,7 +52,7 @@ export const Container = styled.section`
     position: absolute;
     margin: 1rem;
     height: 3rem;
-    right: 0;
+    left: 0;
     top: 0;
     transition: 0.3s all ease;
 
@@ -169,128 +169,14 @@ export const Container = styled.section`
       margin-top: 3rem;
     }
   }
-`;
 
-export const Reservations = styled.div`
-  ${setFlexbox("space-evenly", "center", "column")}
-  width: 100%;
-  padding: 5rem 0;
-  gap: 5rem;
-  max-width: 60rem;
-  background-color: ${palette.form_background};
-  border-radius: 5px;
+  @media screen and (max-width: 780px) {
+    height: auto;
+    padding: 2rem 0;
 
-  h2 {
-    color: ${palette.form_title_color};
-    font-size: 2.6rem;
-  }
-
-  label {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: ${palette.form_text_color};
-  }
-`;
-
-export const Table = styled.table`
-  border: none;
-  margin: 0;
-  padding: 0;
-  table-layout: fixed;
-  border-collapse: collapse;
-
-  & caption {
-    font-size: 1.5rem;
-    margin: 0.5rem 0 0.75rem;
-  }
-
-  & tr {
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    padding: 0.35rem;
-  }
-
-  & th,
-  & td {
-    padding: 0.6rem 1rem;
-    text-align: center;
-  }
-
-  & th {
-    font-size: 1.2rem;
-    text-transform: uppercase;
-  }
-
-  & td .action {
-    border: 0;
-    padding: 5px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-right: 3px;
-  }
-
-  & td .action svg {
-    vertical-align: middle;
-  }
-
-  & td .badge {
-    padding: 3px;
-    border-radius: 3px;
-    color: #fff;
-  }
-
-  button {
-    ${setFlexbox("center", "center", "row")}
-    height: 3rem;
-    border: none;
-    border-radius: 5px;
-    color: ${palette.form_button_color};
-    font-weight: 600;
-    transition: 0.3s all ease;
-    cursor: pointer;
-    width: auto;
-    font-size: 1.5rem;
-    padding: 1rem 1rem;
-    background-color: darkred;
-
-    &:hover {
-      filter: contrast(1.5);
-    }
-  }
-
-  @media screen and (max-width: 600px) {
-    & caption {
-      font-size: 1.3rem;
-    }
-
-    & thead {
-      border: none;
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
-    }
-
-    & tr {
-      border-bottom: 3px solid #ddd;
-      display: block;
-      margin-bottom: 0.6rem;
-    }
-
-    & td {
-      border-bottom: 1px solid #ddd;
-      display: block;
-      font-size: 1.4rem;
-      text-align: right;
-    }
-
-    & td::before {
-      content: attr(data-label);
-      float: left;
-      font-weight: bold;
-      text-transform: uppercase;
+    .form-profile .box-inputs {
+      display: flex;
+      flex-direction: column;
     }
   }
 `;

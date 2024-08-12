@@ -46,6 +46,30 @@ export const Container = styled.section`
       filter: brightness(0.8);
     }
   }
+
+  @media screen and (max-width: 780px) {
+    height: auto;
+    min-height: 100vh;
+    padding: 2rem 0;
+
+    .modal-my-reservation .modal-box {
+      width: 90%;
+      max-width: 50rem;
+      overflow-x: hidden;
+      height: auto;
+      max-height: 80%;
+    }
+
+    .modal-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      width: 100%;
+    }
+
+    .modal-info div {
+      width: auto;
+    }
+  }
 `;
 
 export const StyledLink = styled(Link)`
@@ -77,6 +101,10 @@ export const Reservations = styled.div`
     font-size: 1.4rem;
     font-weight: 600;
     color: ${palette.form_text_color};
+  }
+
+  @media screen and (max-width: 780px) {
+    width: 90%;
   }
 `;
 
@@ -167,7 +195,9 @@ export const Table = styled.table`
     }
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 780px) {
+    width: 90%;
+
     & caption {
       font-size: 1.3rem;
     }
@@ -186,13 +216,14 @@ export const Table = styled.table`
       border: 3px solid #ddd;
       border-radius: 5px;
       display: block;
-      margin-bottom: 0.6rem;
+      margin-bottom: 2rem;
+      background-color: #efefef;
     }
 
     & td {
       border-bottom: 1px solid #ddd;
       display: block;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       text-align: right;
     }
 
@@ -201,6 +232,16 @@ export const Table = styled.table`
       float: left;
       font-weight: bold;
       text-transform: uppercase;
+    }
+
+    .action-row {
+      ${setFlexbox("center", "center", "row")}
+      width: 100%;
+      border-bottom: none;
+
+      button {
+        font-size: 1.6rem;
+      }
     }
   }
 `;

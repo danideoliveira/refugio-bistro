@@ -12,6 +12,19 @@ export const Container = styled.header`
   .header-box {
     ${setFlexbox("space-between", "center", "row")}
     width: 90%;
+
+    .burguer {
+      color: #fff;
+      font-size: 3.5rem;
+      margin: 2rem;
+      cursor: pointer;
+      display: none;
+      position: fixed;
+      right: 0;
+      top: 0;
+      background-color: #0e0e0e80;
+      border-radius: 5px;
+    }
   }
 
   .header-logo {
@@ -32,6 +45,55 @@ export const Container = styled.header`
   nav {
     ${setFlexbox("center", "center", "row")}
     gap: 2rem;
+  }
+
+  @media screen and (max-width: 780px) {
+    ${setFlexbox("flex-start", "center", "column")}
+    padding-top: 0rem;
+    height: 100vh;
+    width: 50%;
+    position: fixed;
+    z-index: 999;
+    transition: 0.5s all ease-in-out;
+
+    .header-logo {
+      width: 100%;
+      flex-direction: column;
+
+      span {
+        font-size: 2rem;
+      }
+    }
+
+    .header-box {
+      ${setFlexbox("center", "flex-start", "column")}
+      gap: 5rem;
+      height: auto;
+      width: 100%;
+      margin-top: 7rem;
+
+      .burguer {
+        display: block;
+      }
+    }
+
+    nav {
+      ${setFlexbox("center", "center", "column")}
+      gap: 0;
+      width: 100%;
+    }
+
+    a {
+      width: 100%;
+      text-align: center;
+      border-radius: 0;
+      font-size: 2rem;
+      padding: 2rem 3rem;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
   }
 `;
 
@@ -59,6 +121,22 @@ export const StyledLink = styled(Link)`
   &:hover {
     background: ${palette.header_link_color};
     color: ${palette.header_link_background};
+  }
+
+  @media screen and (max-width: 780px) {
+    &.header-login,
+    &.header-profile-button {
+      background: transparent;
+      color: ${palette.header_link_color};
+
+      &:hover {
+        background-color: ${palette.header_link_color};
+        color: #0e0e0e;
+        svg {
+          color: #0e0e0e;
+        }
+      }
+    }
   }
 `;
 

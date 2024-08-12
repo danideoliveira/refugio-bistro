@@ -14,10 +14,28 @@ export const Container = styled.section`
     width: 100%;
     max-width: 1280px;
   }
+
+  @media screen and (max-width: 780px) {
+    height: auto;
+
+    .box {
+      flex-direction: column-reverse;
+    }
+  }
 `;
 
 export const Content = styled.article`
   width: 30%;
+
+  @media screen and (max-width: 780px) {
+    text-align: center;
+    width: 70%;
+    margin-bottom: 6rem;
+
+    p {
+      display: none;
+    }
+  }
 `;
 
 export const Title = styled.h2`
