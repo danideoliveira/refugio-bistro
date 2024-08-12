@@ -17,7 +17,6 @@ export const Container = styled.form`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem 3rem;
-    min-width: 90%;
 
     .full {
       grid-area: 1 / 1 / 2 / 3;
