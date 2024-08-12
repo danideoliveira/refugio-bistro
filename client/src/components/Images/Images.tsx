@@ -1,4 +1,5 @@
 import logo from "../../assets/img/logo.jpg";
+import logoNoBg from "../../assets/img/logoNoBg.png";
 import logoLocation from "../../assets/img/logoLocation.png";
 import homeImage from "../../assets/img/homeImage.jpg";
 
@@ -30,6 +31,7 @@ import profileBackground from "../../assets/img/profileBackground.png";
 
 export const images = {
   logo,
+  logoNoBg,
   logoLocation,
   homeImage,
   meal1,

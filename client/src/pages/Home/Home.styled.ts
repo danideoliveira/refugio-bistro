@@ -24,6 +24,10 @@ export const Container = styled.div`
     ${setFlexbox("center", "flex-start", "column")}
     width: 50%;
     max-width: 50rem;
+
+    img {
+      display: none;
+    }
   }
 
   .gradient {
@@ -38,6 +42,10 @@ export const Container = styled.div`
   }
 
   @media screen and (max-width: 780px) {
+    height: auto;
+    min-height: 100vh;
+    padding: 3rem 0;
+
     .home-box {
       align-items: center;
     }
@@ -45,11 +53,27 @@ export const Container = styled.div`
     .home-content {
       width: 75%;
       text-align: center;
+      align-items: center;
+
+      img {
+        display: block;
+        width: 15rem;
+        border-radius: 50%;
+        background-color: #0e0e0e00;
+      }
     }
 
     h1 {
       width: 100%;
       text-align: center;
+    }
+
+    .gradient {
+      background: linear-gradient(
+        180deg,
+        rgba(14, 14, 14, 1) 12%,
+        rgba(255, 255, 255, 0) 100%
+      );
     }
   }
 `;

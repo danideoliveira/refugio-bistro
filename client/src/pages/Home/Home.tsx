@@ -1,3 +1,4 @@
+import { images } from "../../components/Images/Images";
 import { Button, Container, Title } from "./Home.styled";
 
 function Home(): JSX.Element {
@@ -6,8 +7,9 @@ function Home(): JSX.Element {
       <Container>
         <article className="home-box">
           <div className="home-content">
-            <Title>Refúgio Bistrô</Title>
+            <img src={images.logoNoBg} alt="logo" />
 
+            <Title>Refúgio Bistrô</Title>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel
               voluptatum esse sed nihil debitis, suscipit dicta doloribus
