@@ -24,7 +24,6 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <AuthProvider>
-          <ScrollToTop />
           <ToastContainer
             autoClose={3000}
             hideProgressBar={false}
