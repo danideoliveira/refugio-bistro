@@ -33,7 +33,7 @@ export const Container = styled.header`
 
     span {
       color: #fff;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
     }
   }
 
@@ -99,7 +99,7 @@ export const Container = styled.header`
 
 export const StyledLink = styled(Link)`
   padding: 0.5rem 1rem;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   text-decoration: none;
   transition: 0.3s all ease;
   color: ${palette.header_link_color};
@@ -142,7 +142,7 @@ export const StyledLink = styled(Link)`
 
 export const StyledHashLink = styled(HashLink)`
   padding: 0.5rem 1rem;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   text-decoration: none;
   transition: 0.3s all ease;
   color: ${palette.header_link_color};
