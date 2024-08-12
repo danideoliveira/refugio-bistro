@@ -17,7 +17,7 @@ interface ISettings {
   initialSlide?: number;
 }
 
-function Carousel() {
+function Carousel(): JSX.Element {
   const settings: ISettings = {
     dots: true,
     infinite: true,
@@ -39,7 +39,7 @@ function Carousel() {
       ".carousel-buttons button",
     );
 
-    carouselButtons.forEach((button) => {
+    carouselButtons.forEach((button: HTMLElement) => {
       button.removeAttribute("class");
     });
 

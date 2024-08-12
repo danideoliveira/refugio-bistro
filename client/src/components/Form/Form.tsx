@@ -8,7 +8,7 @@ interface IForm {
   className: string;
 }
 
-function Form({ children, onSubmit, className }: IForm) {
+function Form({ children, onSubmit, className }: IForm): JSX.Element {
   return (
     <>
       <Container onSubmit={onSubmit} className={className}>

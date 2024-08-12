@@ -16,10 +16,10 @@ interface ILocation {
   url: string;
 }
 
-function Location() {
-  const titleRef: any = useRef();
-  const textRef: any = useRef();
-  const imageRef: any = useRef();
+function Location(): JSX.Element {
+  const titleRef: React.MutableRefObject<any> = useRef();
+  const textRef: React.MutableRefObject<any> = useRef();
+  const imageRef: React.MutableRefObject<any> = useRef();
 
   const [locationSelected, setLocationSelected] = useState<ILocation>({
     name: "Rio de Janeiro",
@@ -56,7 +56,7 @@ function Location() {
     },
   ];
 
-  const handleSelectLocation = (item: ILocation) => {
+  const handleSelectLocation = (item: ILocation): void => {
     setLocationSelected(item);
     setSelectedButton(item.name);
   };
@@ -86,7 +86,7 @@ function Location() {
               <h2>Unidades</h2>
 
               <div className="button-list">
-                {locations.map((currentLocation) => (
+                {locations.map((currentLocation: ILocation) => (
                   <button
                     key={currentLocation.name}
                     id={currentLocation.name}

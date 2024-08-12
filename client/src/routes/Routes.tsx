@@ -9,7 +9,7 @@ import Reservation from "../pages/Reservation/Reservation";
 import Profile from "../pages/Profile/Profile";
 import MyReservation from "../pages/MyReservation/MyReservation";
 
-function RoutesApp() {
+function RoutesApp(): JSX.Element {
   return (
     <>
       <Routes>

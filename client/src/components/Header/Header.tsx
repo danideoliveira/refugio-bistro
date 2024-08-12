@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/auth";
 import { FaUserCircle } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 
-function Header() {
+function Header(): JSX.Element {
   const { user } = useContext<any>(AuthContext);
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
 

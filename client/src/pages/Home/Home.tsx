@@ -1,6 +1,6 @@
 import { Button, Container, Title } from "./Home.styled";
 
-function Home() {
+function Home(): JSX.Element {
   return (
     <>
       <Container>

@@ -1,10 +1,10 @@
-import { css } from "styled-components";
+import { css, RuleSet } from "styled-components";
 
 export const setFlexbox = (
   justifyContent: string,
   alignItems: string,
   flexDirection: string,
-) => css`
+): RuleSet<object> => css`
   display: flex;
   justify-content: ${justifyContent};
   align-items: ${alignItems};

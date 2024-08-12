@@ -6,14 +6,14 @@ import { IoIosArrowBack } from "react-icons/io";
 import { db } from "../../services/firebaseConnection";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { StyledLoading } from "../../components/Form/Form.styled";
 
-function Reservation() {
+function Reservation(): JSX.Element {
   const { user, setUser } = useContext<any>(AuthContext);
-  const tomorrow = new Date();
+  const tomorrow: Date = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const arrDate = [tomorrow.toLocaleDateString()];
+  const arrDate: Array<string> = [tomorrow.toLocaleDateString()];
   const [location, setLocation] = useState<string>("Rio de Janeiro");
   const [date, setDate] = useState<string>(tomorrow.toLocaleDateString());
   const [hour, setHour] = useState<string>("18:00");
@@ -21,9 +21,9 @@ function Reservation() {
   const [place, setPlace] = useState<string>("Térreo");
   const [steps, setSteps] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
 
-  const reservationSteps = [
+  const reservationSteps: Array<JSX.Element> = [
     <LocationInfo chosenLocation={[location, setLocation]} />,
     <GeneralInfo
       chosenDate={[date, setDate]}
@@ -42,15 +42,15 @@ function Reservation() {
       }}
     />,
   ];
-  const firstStep = steps <= 0;
-  const lastStep = steps >= reservationSteps.length - 1;
+  const firstStep: boolean = steps <= 0;
+  const lastStep: boolean = steps >= reservationSteps.length - 1;
 
   for (let i = 0; i < 5; i++) {
     tomorrow.setDate(tomorrow.getDate() + 1);
     arrDate.push(tomorrow.toLocaleDateString());
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<void> {
     setLoading(true);
 
     const newReservation = {

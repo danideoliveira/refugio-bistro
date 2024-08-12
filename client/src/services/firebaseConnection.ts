@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { FirebaseApp, initializeApp } from "firebase/app";
+import { Firestore, getFirestore } from "firebase/firestore";
+import { Auth, getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_REACT_API_KEY,
@@ -11,9 +11,9 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_REACT_APP_ID,
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
 
-const db = getFirestore(firebaseApp);
-const auth = getAuth(firebaseApp);
+const db: Firestore = getFirestore(firebaseApp);
+const auth: Auth = getAuth(firebaseApp);
 
 export { db, auth };

@@ -35,7 +35,7 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { formatCPF } from "../helpers/validateCpf";
 import { EmailAuthProvider } from "firebase/auth/web-extension";
 
-export const AuthContext = createContext({});
+export const AuthContext: React.Context<object> = createContext({});
 
 interface IUserData {
   uid?: string;
@@ -80,7 +80,7 @@ function checkFirebaseError(err: any): void {
   });
 }
 
-function AuthProvider({ children }: any) {
+function AuthProvider({ children }: any): JSX.Element {
   const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
@@ -284,7 +284,7 @@ function AuthProvider({ children }: any) {
         await updateEmail(auth.currentUser, newEmail);
       }
 
-      const docRef = doc(db, "users", user.uid);
+      const docRef: DocumentReference = doc(db, "users", user.uid);
       await updateDoc(docRef, {
         name: newName,
         email: newEmail,

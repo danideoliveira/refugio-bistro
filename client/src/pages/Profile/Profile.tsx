@@ -15,7 +15,7 @@ import Modal from "../../components/Modal/Modal";
 import { FaTrashCan } from "react-icons/fa6";
 import { validateCPF } from "../../helpers/validateCpf";
 
-function Profile() {
+function Profile(): JSX.Element {
   const { user, logout, deleteAccount, updateUser, loading, setLoading } =
     useContext(AuthContext) as {
       user: { uid: string; name: string; email: string };
@@ -42,7 +42,7 @@ function Profile() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalPassword, setShowModalPassword] = useState<boolean>(false);
 
-  const schema = z.object({
+  const schema: z.ZodSchema = z.object({
     name: z.string().min(1, "O campo nome é obrigatório!").default(user?.name),
     email: z.string().email("Digite um email válido").default(user?.email),
     cpf: z
@@ -124,7 +124,9 @@ function Profile() {
                     value={newName}
                     {...register("name")}
                     disabled={disabledInput}
-                    onChange={(e) => setNewName(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setNewName(e.target.value)
+                    }
                   />
                   <span
                     className="error"
@@ -144,7 +146,9 @@ function Profile() {
                     value={newCPF}
                     {...register("cpf")}
                     disabled={true}
-                    onChange={(e) => setNewCPF(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setNewCPF(e.target.value)
+                    }
                   />
                   <span
                     className="error"
@@ -164,7 +168,9 @@ function Profile() {
                     value={newEmail}
                     {...register("email")}
                     disabled={disabledInput}
-                    onChange={(e) => setNewEmail(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setNewEmail(e.target.value)
+                    }
                   />
                   <span
                     className="error"
@@ -184,7 +190,9 @@ function Profile() {
                     value={newPhone}
                     {...register("phone")}
                     disabled={disabledInput}
-                    onChange={(e) => setNewPhone(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setNewPhone(e.target.value)
+                    }
                   />
                   <span
                     className="error"
@@ -259,7 +267,7 @@ function Profile() {
               <input
                 {...register("password")}
                 value={password}
-                onChange={(e: any) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setPassword(e.target.value);
                 }}
                 type="password"
@@ -312,7 +320,7 @@ function Profile() {
               <input
                 {...register("password")}
                 value={password}
-                onChange={(e: any) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setPassword(e.target.value);
                 }}
                 type="password"

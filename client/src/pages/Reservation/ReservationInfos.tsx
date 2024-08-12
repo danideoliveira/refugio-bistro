@@ -36,19 +36,20 @@ const locations: Array<ILocation> = [
   },
 ];
 
-export const LocationInfo = (props: any) => {
+export const LocationInfo = (props: any): JSX.Element => {
   const defaultValue = props.chosenLocation[0];
   const setLocation = props.chosenLocation[1];
   const [selectedButton, setSelectedButton] = useState<string>(defaultValue);
 
-  const handleSelectLocation = (item: ILocation) => {
+  const handleSelectLocation = (item: ILocation): void => {
     setSelectedButton(item.name);
     setLocation(item.name);
   };
+
   return (
     <>
       <LocationList className="button-list">
-        {locations.map((currentLocation) => (
+        {locations.map((currentLocation: ILocation) => (
           <button
             key={currentLocation.name}
             id={currentLocation.name}
@@ -64,10 +65,10 @@ export const LocationInfo = (props: any) => {
   );
 };
 
-export const GeneralInfo = (props: any) => {
-  const tomorrow = new Date();
+export const GeneralInfo = (props: any): JSX.Element => {
+  const tomorrow: Date = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const arrDate = [tomorrow.toLocaleDateString()];
+  const arrDate: Array<string> = [tomorrow.toLocaleDateString()];
 
   for (let i = 0; i < 5; i++) {
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -110,7 +111,7 @@ export const GeneralInfo = (props: any) => {
   );
 };
 
-export const ReviewInfo = (props: any) => {
+export const ReviewInfo = (props: any): JSX.Element => {
   const { location, date, hour, people, place } = props.reservationInfo;
 
   return (
@@ -123,7 +124,7 @@ export const ReviewInfo = (props: any) => {
 
         <InfoSquare>
           <label>Endereço</label>
-          {locations.map((value) => (
+          {locations.map((value: ILocation) => (
             <p key={value.name}>{value.name === location && value.address}</p>
           ))}
         </InfoSquare>

@@ -8,7 +8,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { validateCPF } from "../../helpers/validateCpf";
 
-const schema = z.object({
+const schema: z.ZodSchema = z.object({
   name: z.string().min(1, "O campo nome é obrigatório."),
   email: z
     .string()
@@ -26,7 +26,7 @@ const schema = z.object({
     ),
 });
 
-function Register() {
+function Register(): JSX.Element {
   const { signUp, loading }: any = useContext(AuthContext);
 
   const {
@@ -37,7 +37,7 @@ function Register() {
     resolver: zodResolver(schema),
   });
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: any): Promise<void> {
     const { name, cpf, email, phone, password } = data;
     await signUp(name, cpf, email, phone, password);
   }

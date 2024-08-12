@@ -9,7 +9,7 @@ import {
 } from "./Footer.styled";
 import { images } from "../Images/Images";
 
-function Footer() {
+function Footer(): JSX.Element {
   return (
     <Container>
       <div className="footer-box">

@@ -1,12 +1,12 @@
-const validateCPF = (cpf: string) => {
+const validateCPF = (cpf: string): boolean => {
   cpf = cpf.replace(/[^\d]+/g, "");
 
   if (cpf.length !== 11) return false;
 
   if (/^(\d)\1+$/.test(cpf)) return false;
 
-  let sum = 0;
-  let remainder;
+  let sum: number = 0;
+  let remainder: number;
 
   for (let i = 1; i <= 9; i++)
     sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);

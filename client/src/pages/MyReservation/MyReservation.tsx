@@ -14,11 +14,11 @@ import Modal from "../../components/Modal/Modal";
 import { IoIosArrowBack } from "react-icons/io";
 import { InfoSquare, ReviewGrid } from "../Reservation/Reservation.styled";
 
-function MyReservation() {
+function MyReservation(): JSX.Element {
   const { user, setUser }: any = useContext(AuthContext);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [chosenReservation, setChosenReservation] = useState<any>("");
-  let ordenedReservations = user?.reservations;
+  let ordenedReservations: Array<object> = user?.reservations;
 
   if (user?.reservations.length > 1) {
     ordenedReservations =
@@ -27,7 +27,7 @@ function MyReservation() {
         : [user?.reservations[0], user?.reservations[1]];
   }
 
-  async function handleDeleteRow(date: string) {
+  async function handleDeleteRow(date: string): Promise<void> {
     try {
       const updatedReservations = user.reservations.filter(
         (reservation: any) => reservation.date !== date,
@@ -53,7 +53,7 @@ function MyReservation() {
     }
   }
 
-  function handleShowModal(reservation: any) {
+  function handleShowModal(reservation: any): void {
     setChosenReservation(reservation);
     setShowModal(!showModal);
   }

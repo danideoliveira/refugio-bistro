@@ -8,9 +8,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 
-function App() {
-  function ScrollToTop() {
-    const { pathname } = useLocation();
+function App(): JSX.Element {
+  function ScrollToTop(): null {
+    const { pathname }: { pathname: string } = useLocation();
 
     useEffect(() => {
       window.scrollTo(0, 0);

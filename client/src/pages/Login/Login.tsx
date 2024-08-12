@@ -8,7 +8,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/auth";
 import Modal from "../../components/Modal/Modal";
 
-const loginSchema = z.object({
+const loginSchema: z.ZodSchema = z.object({
   email: z
     .string()
     .email("Digite um email válido")
@@ -16,14 +16,14 @@ const loginSchema = z.object({
   password: z.string().min(1, "Preencha o campo de senha"),
 });
 
-const resetPasswordSchema = z.object({
+const resetPasswordSchema: z.ZodSchema = z.object({
   emailReset: z
     .string()
     .email("Digite um email válido")
     .min(1, "O email é obrigatório"),
 });
 
-function Login() {
+function Login(): JSX.Element {
   const { signIn, loading, resetPassword }: any = useContext(AuthContext);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -43,12 +43,12 @@ function Login() {
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmitLogin = async (data: any) => {
+  const onSubmitLogin = async (data: any): Promise<void> => {
     const { email, password }: { email: string; password: string } = data;
     await signIn(email, password);
   };
 
-  const onSubmitResetPassword = async (data: any) => {
+  const onSubmitResetPassword = async (data: any): Promise<void> => {
     resetPassword(data.emailReset);
     setShowModal(false);
   };

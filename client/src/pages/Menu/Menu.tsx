@@ -1,7 +1,7 @@
 import Carousel from "../../components/Carousel/Carousel";
 import { Container, Content, Title } from "./Menu.styled";
 
-function Menu() {
+function Menu(): JSX.Element {
   return (
     <>
       <Container id="menu">

@@ -7,7 +7,7 @@ export default function Private({
   children: any;
   reversePrivate?: boolean;
 }) {
-  const currentUser = localStorage.getItem("@currentUser");
+  const currentUser: string | null = localStorage.getItem("@currentUser");
 
   if (currentUser && !reversePrivate) {
     return <Navigate to="/" />;
