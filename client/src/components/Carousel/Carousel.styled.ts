@@ -60,10 +60,6 @@ export const Container = styled.div`
     .slick-next {
       display: none !important;
     }
-
-    .carousel-image img {
-      width: 150%;
-    }
   }
 `;
 
