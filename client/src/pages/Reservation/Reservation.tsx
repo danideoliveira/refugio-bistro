@@ -52,6 +52,7 @@ function Reservation(): JSX.Element {
 
   async function handleSubmit(): Promise<void> {
     setLoading(true);
+    const moment: Date = new Date();
 
     const newReservation = {
       location,
@@ -59,6 +60,7 @@ function Reservation(): JSX.Element {
       hour,
       people,
       place,
+      moment: moment.toLocaleString(),
     };
 
     let reservationsUpdated: Array<object> = [];

@@ -88,7 +88,7 @@ export const Reservations = styled.div`
   width: 100%;
   padding: 5rem 0;
   gap: 5rem;
-  max-width: 65rem;
+  max-width: 75rem;
   background-color: ${palette.form_background};
   border-radius: 5px;
 

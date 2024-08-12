@@ -72,6 +72,7 @@ function MyReservation(): JSX.Element {
                 <th>Pessoas</th>
                 <th>Ambiente</th>
                 <th>Unidade</th>
+                <th>Efetuada em</th>
                 <th>#</th>
               </tr>
             </thead>
@@ -87,6 +88,9 @@ function MyReservation(): JSX.Element {
                     <td data-label="Pessoas">{currentReservation.people}</td>
                     <td data-label="Ambiente">{currentReservation.place}</td>
                     <td data-label="Unidade">{currentReservation.location}</td>
+                    <td data-label="Efetuada em:">
+                      {currentReservation.moment}
+                    </td>
                     <td className="action-row">
                       <button
                         type="button"
