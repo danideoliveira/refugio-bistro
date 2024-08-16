@@ -1,8 +1,6 @@
 import { ToastContainer } from "react-toastify";
-import Header from "./components/Header/Header";
 import AdminProvider from "./contexts/authAdmin";
 import GlobalStyles from "./globalStyles";
-import Dashboard from "./pages/Dashboard/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter } from "react-router-dom";
 import RoutesApp from "./routes/Routes";
