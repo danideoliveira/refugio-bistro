@@ -61,6 +61,7 @@ function Reservation(): JSX.Element {
       people,
       place,
       moment: moment.toLocaleString(),
+      status: "open",
     };
 
     let reservationsUpdated: Array<object> = [];
