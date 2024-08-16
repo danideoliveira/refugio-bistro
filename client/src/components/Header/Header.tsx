@@ -23,7 +23,7 @@ function Header(): JSX.Element {
           />
           <div className="header-logo">
             <img src={images.logo} alt="logo" className="logo" />
-            {user && <span>Olá, {user.name.split(" ")[0]}!</span>}
+            {user?.name && <span>Olá, {user.name.split(" ")[0]}!</span>}
           </div>
 
           <nav>
