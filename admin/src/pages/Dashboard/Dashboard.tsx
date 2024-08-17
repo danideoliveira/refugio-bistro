@@ -210,7 +210,6 @@ function Dashboard(): JSX.Element {
 
     const reservationTime: Date = new Date(year, month - 1, day, hour, minute);
     const currentTime: Date = new Date();
-    // const currentTime: Date = new Date(year, month - 1, day + 1, hour, minute);
 
     const toleranceTime: Date = new Date(
       reservationTime.getTime() + 30 * 60000
