@@ -4,9 +4,12 @@ import {
   CollectionReference,
   doc,
   DocumentData,
+  DocumentReference,
+  DocumentSnapshot,
   getDoc,
   onSnapshot,
   QueryDocumentSnapshot,
+  QuerySnapshot,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
@@ -34,16 +37,16 @@ interface IReservation {
 
 function Dashboard(): JSX.Element {
   const { currentList, checkFirebaseError } = useContext<any>(AdminContext);
-  const [reservations, setReservations] = useState<any>([]);
-  const [expiredList, setExpiredList] = useState<Array<any>>([]);
-  const [usedList, setUsedList] = useState<any>([]);
+  const [reservations, setReservations] = useState<Array<IReservation>>([]);
+  const [expiredList, setExpiredList] = useState<Array<IReservation>>([]);
+  const [usedList, setUsedList] = useState<Array<IReservation>>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [customer, setCustomer] = useState<any>();
   const [locationFilter, setLocationFilter] =
     useState<string>("Qualquer unidade");
   const [dateFilter, setDateFilter] = useState<string>("Qualquer data");
 
-  const today = new Date();
+  const today: Date = new Date();
   today.setDate(today.getDate());
   const arrDate: Array<string> = [today.toLocaleDateString()];
 
@@ -62,13 +65,13 @@ function Dashboard(): JSX.Element {
     function loadAllReservations() {
       const collectionRef: CollectionReference = collection(db, "users");
 
-      onSnapshot(collectionRef, (snapshot) => {
+      onSnapshot(collectionRef, (snapshot: QuerySnapshot) => {
         const list: Array<IReservation> = [];
 
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
-          const docReservations: Array<any> = doc.data().reservations;
+          const docReservations: Array<IReservation> = doc.data().reservations;
 
-          docReservations.forEach(async (currentReservation) => {
+          docReservations.forEach(async (currentReservation: IReservation) => {
             const data: IReservation = {
               uid: doc.id,
               name: doc.data().name,
@@ -106,7 +109,7 @@ function Dashboard(): JSX.Element {
         "expired_reservations"
       );
 
-      onSnapshot(collectionRef, (snapshot) => {
+      onSnapshot(collectionRef, (snapshot: QuerySnapshot) => {
         const list: Array<IReservation> = [];
 
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
@@ -144,7 +147,7 @@ function Dashboard(): JSX.Element {
         "used_reservations"
       );
 
-      onSnapshot(collectionRef, (snapshot) => {
+      onSnapshot(collectionRef, (snapshot: QuerySnapshot) => {
         const list: Array<IReservation> = [];
 
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
@@ -180,8 +183,8 @@ function Dashboard(): JSX.Element {
       const [dayA, monthA, yearA] = a.date.split("/").map(Number);
       const [dayB, monthB, yearB] = b.date.split("/").map(Number);
 
-      const dateA = new Date(yearA, monthA - 1, dayA);
-      const dateB = new Date(yearB, monthB - 1, dayB);
+      const dateA: Date = new Date(yearA, monthA - 1, dayA);
+      const dateB: Date = new Date(yearB, monthB - 1, dayB);
 
       if (dateA.getTime() !== dateB.getTime()) {
         return dateA.getTime() - dateB.getTime();
@@ -190,8 +193,8 @@ function Dashboard(): JSX.Element {
       const [hourA, minuteA] = a.hour.split(":").map(Number);
       const [hourB, minuteB] = b.hour.split(":").map(Number);
 
-      const timeA = hourA * 60 + minuteA;
-      const timeB = hourB * 60 + minuteB;
+      const timeA: number = hourA * 60 + minuteA;
+      const timeB: number = hourB * 60 + minuteB;
 
       if (timeA !== timeB) {
         return timeA - timeB;
@@ -205,48 +208,63 @@ function Dashboard(): JSX.Element {
     const [day, month, year] = reservation.date.split("/").map(Number);
     const [hour, minute] = reservation.hour.split(":").map(Number);
 
-    const reservationTime = new Date(year, month - 1, day, hour, minute);
-    const currentTime = new Date();
+    const reservationTime: Date = new Date(year, month - 1, day, hour, minute);
+    const currentTime: Date = new Date();
+    // const currentTime: Date = new Date(year, month - 1, day + 1, hour, minute);
 
-    const toleranceTime = new Date(reservationTime.getTime() + 30 * 60000);
+    const toleranceTime: Date = new Date(
+      reservationTime.getTime() + 30 * 60000
+    );
 
     return currentTime > toleranceTime;
   }
 
-  async function deleteReservation(reservation: IReservation) {
+  async function deleteReservation(reservation: IReservation): Promise<void> {
     if (reservation.uid) {
-      const docRef = doc(db, "users", reservation.uid);
+      const docRef: DocumentReference = doc(db, "users", reservation.uid);
 
-      await getDoc(docRef).then(async (snapshot: any) => {
-        const data: any = snapshot.data().reservations;
-        const otherReservation: any = data.filter(
-          (value: any) => value.date !== reservation.date
-        );
-        const expiredReservation: any = data.filter(
-          (value: any) => value.date === reservation.date
-        );
+      await getDoc(docRef).then(async (snapshot: DocumentSnapshot) => {
+        const data: DocumentData | undefined = snapshot.data();
 
-        expiredReservation.forEach((value: any) => (value.status = "expired"));
+        if (data?.reservations) {
+          const otherReservation: Array<IReservation> =
+            data.reservations.filter(
+              (value: IReservation) => value.date !== reservation.date
+            );
+          const expiredReservation: Array<IReservation> =
+            data.reservations.filter(
+              (value: IReservation) => value.date === reservation.date
+            );
 
-        const newData = otherReservation ? [...otherReservation] : [];
+          expiredReservation.forEach(
+            (value: IReservation) => (value.status = "expired")
+          );
 
-        await addDoc(collection(db, "expired_reservations"), {
-          name: reservation.name,
-          email: reservation.email,
-          phone: reservation.phone,
-          ...expiredReservation[0],
-        }).then(() => console.log("reserva expirada salva"));
+          const newData: Array<IReservation> = otherReservation
+            ? [...otherReservation]
+            : [];
 
-        await updateDoc(docRef, {
-          reservations: newData,
-        });
+          const { name, email, phone, ...restOfExpiredReservation } =
+            expiredReservation[0] || {};
+
+          await addDoc(collection(db, "expired_reservations"), {
+            name: reservation.name || name,
+            email: reservation.email || email,
+            phone: reservation.phone || phone,
+            ...restOfExpiredReservation,
+          });
+
+          await updateDoc(docRef, {
+            reservations: newData,
+          });
+        }
       });
     }
   }
 
   async function handleSetUsed(usedReservation: IReservation): Promise<void> {
-    const check = usedList.filter(
-      (value: any) =>
+    const check: Array<IReservation> = usedList.filter(
+      (value: IReservation) =>
         value.date === usedReservation.date &&
         value.email == usedReservation.email
     );
@@ -260,37 +278,49 @@ function Dashboard(): JSX.Element {
     }
 
     if (usedReservation.uid) {
-      const docRef = doc(db, "users", usedReservation.uid);
+      const docRef: DocumentReference = doc(db, "users", usedReservation.uid);
 
       try {
         await getDoc(docRef)
-          .then(async (snapshot: any) => {
-            const data: any = snapshot.data().reservations;
-            const otherReservation: any = data.filter(
-              (value: any) => value.date !== usedReservation.date
-            );
-            const usedReservationFiltered: any = data.filter(
-              (value: any) => value.date === usedReservation.date
-            );
+          .then(async (snapshot: DocumentSnapshot) => {
+            const data: DocumentData | undefined = snapshot.data();
 
-            usedReservationFiltered.forEach(
-              (value: any) => (value.status = "used")
-            );
+            if (data?.reservations) {
+              const otherReservation: Array<IReservation> =
+                data.reservations.filter(
+                  (value: IReservation) => value.date !== usedReservation.date
+                );
+              const usedReservationFiltered: Array<IReservation> =
+                data.reservations.filter(
+                  (value: IReservation) => value.date === usedReservation.date
+                );
 
-            const newData = otherReservation ? [...otherReservation] : [];
+              usedReservationFiltered.forEach(
+                (value: IReservation) => (value.status = "used")
+              );
 
-            await addDoc(collection(db, "used_reservations"), {
-              name: usedReservation.name,
-              email: usedReservation.email,
-              phone: usedReservation.phone,
-              ...usedReservationFiltered[0],
-            });
+              const newData: Array<IReservation> = otherReservation
+                ? [...otherReservation]
+                : [];
 
-            await updateDoc(docRef, {
-              reservations: newData,
-            }).then(() => {
-              toast.success(`Presença de ${usedReservation.name} confirmada!`);
-            });
+              const { name, email, phone, ...restOfUsedReservation } =
+                usedReservationFiltered[0] || {};
+
+              await addDoc(collection(db, "used_reservations"), {
+                name: usedReservation.name || name,
+                email: usedReservation.email || email,
+                phone: usedReservation.phone || phone,
+                ...restOfUsedReservation,
+              });
+
+              await updateDoc(docRef, {
+                reservations: newData,
+              }).then(() => {
+                toast.success(
+                  `Presença de ${usedReservation.name} confirmada!`
+                );
+              });
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -307,15 +337,17 @@ function Dashboard(): JSX.Element {
     location?: string,
     date?: string
   ): Array<IReservation> => {
-    let filteredStatus: any = [];
-    const allStatus = [
+    type StatusList = { status: string; list: Array<IReservation> };
+
+    let filteredStatus: Array<IReservation> = [];
+    const allStatus: Array<StatusList> = [
       { status: "all", list: [...reservations, ...expiredList, ...usedList] },
       { status: "open", list: reservations },
       { status: "expired", list: expiredList },
       { status: "used", list: usedList },
     ];
 
-    allStatus.map((value) => {
+    allStatus.map((value: StatusList) => {
       if (value.status === currentList) {
         filteredStatus = value.list;
       }
@@ -323,8 +355,8 @@ function Dashboard(): JSX.Element {
 
     if (location || date) {
       if (location !== "Qualquer unidade") {
-        const filteredList: any = [];
-        filteredStatus.forEach((value: any) => {
+        const filteredList: Array<IReservation> = [];
+        filteredStatus.forEach((value: IReservation) => {
           if (value.location) {
             if (value.location === location) filteredList.push(value);
           }
@@ -334,9 +366,9 @@ function Dashboard(): JSX.Element {
       }
 
       if (date !== "Qualquer data") {
-        const filteredList: any = [];
+        const filteredList: Array<IReservation> = [];
 
-        filteredStatus.forEach((value: any) => {
+        filteredStatus.forEach((value: IReservation) => {
           if (value.date) {
             if (value.date === date) filteredList.push(value);
           }
@@ -350,8 +382,13 @@ function Dashboard(): JSX.Element {
     return sortedList;
   };
 
-  function getReservationStatus(reservation: IReservation) {
-    const allStatus: any = [
+  function getReservationStatus(reservation: IReservation): JSX.Element {
+    type ReservationElement = {
+      action: string;
+      element: JSX.Element;
+    };
+
+    const allStatus: Array<ReservationElement> = [
       {
         action: "open",
         element: (
@@ -377,11 +414,13 @@ function Dashboard(): JSX.Element {
       { action: "expired", element: <td data-label="Status">Expirada</td> },
     ];
 
-    const filtered = allStatus.filter((value: any) => {
-      if (value.action === reservation.status) {
-        return value.element;
+    const filtered: Array<ReservationElement> = allStatus.filter(
+      (value: ReservationElement) => {
+        if (value.action === reservation.status) {
+          return value.element;
+        }
       }
-    });
+    );
 
     return filtered[0].element;
   }
@@ -450,10 +489,12 @@ function Dashboard(): JSX.Element {
 
               <tbody>
                 {getCurrentList(locationFilter, dateFilter).map(
-                  (reservation: any, index: number) => (
+                  (reservation: IReservation, index: number) => (
                     <tr
                       key={index}
-                      style={{ background: statusColor[reservation.status] }}
+                      style={{
+                        background: statusColor[reservation.status],
+                      }}
                     >
                       <td data-label="Data da Reserva">{reservation.date}</td>
                       <td data-label="Horário">{reservation.hour}</td>

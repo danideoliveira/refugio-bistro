@@ -15,7 +15,7 @@ interface IUser {
   password?: string;
 }
 
-export interface IFirebaseErrors {
+interface IFirebaseErrors {
   code: string;
   message: string;
 }

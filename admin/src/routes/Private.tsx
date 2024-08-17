@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { ReactNode, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AdminContext } from "../contexts/authAdmin";
 
@@ -6,15 +6,14 @@ export default function Private({
   children,
   reversePrivate,
 }: {
-  children: any;
+  children: ReactNode;
   reversePrivate?: boolean;
 }) {
-  // const { user } = useContext<any>(AdminContext);
-  const currentUser: string | null = localStorage.getItem("@admin");
+  const { user } = useContext<any>(AdminContext);
 
-  if (!currentUser && reversePrivate) {
+  if (!user.email && reversePrivate) {
     return <Navigate to="/login" />;
-  } else if (currentUser && !reversePrivate) {
+  } else if (user.email && !reversePrivate) {
     return <Navigate to="/" />;
   }
 

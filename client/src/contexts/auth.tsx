@@ -17,7 +17,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, ReactNode } from "react";
 import { toast } from "react-toastify";
 import { auth, db } from "../services/firebaseConnection";
 import {
@@ -47,7 +47,11 @@ interface IUserData {
   reservations: Array<object>;
 }
 
-export interface IFirebaseErrors {
+interface ComponentProps {
+  children: ReactNode;
+}
+
+interface IFirebaseErrors {
   code: string;
   message: string;
 }
@@ -75,12 +79,12 @@ function checkFirebaseError(err: any): void {
     { code: "auth/user-not-found", message: "Usuário não encontrado!" },
   ];
 
-  firebaseErrors.forEach((currentError) => {
+  firebaseErrors.forEach((currentError: IFirebaseErrors) => {
     currentError.code === err.code && toast.error(currentError.message);
   });
 }
 
-function AuthProvider({ children }: any): JSX.Element {
+function AuthProvider({ children }: ComponentProps): JSX.Element {
   const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();

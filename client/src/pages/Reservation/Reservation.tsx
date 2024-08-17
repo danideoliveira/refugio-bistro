@@ -4,7 +4,13 @@ import { AuthContext } from "../../contexts/auth";
 import { GeneralInfo, LocationInfo, ReviewInfo } from "./ReservationInfos";
 import { IoIosArrowBack } from "react-icons/io";
 import { db } from "../../services/firebaseConnection";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  DocumentData,
+  DocumentSnapshot,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { StyledLoading } from "../../components/Form/Form.styled";
@@ -69,7 +75,7 @@ function Reservation(): JSX.Element {
     let reservationDenied = false;
 
     try {
-      const snapshot = await getDoc(docRef);
+      const snapshot: DocumentSnapshot = await getDoc(docRef);
       const reservations = snapshot.data()?.reservations || [];
 
       if (reservations.length >= 2) {
@@ -88,8 +94,8 @@ function Reservation(): JSX.Element {
           reservationsUpdated = [...reservations, newReservation];
           await updateDoc(docRef, { reservations: reservationsUpdated });
 
-          const updatedSnapshot = await getDoc(docRef);
-          const data = updatedSnapshot.data();
+          const updatedSnapshot: DocumentSnapshot = await getDoc(docRef);
+          const data: DocumentData | undefined = updatedSnapshot.data();
           setUser({ uid: user.uid, ...data });
           localStorage.setItem(
             "@currentUser",

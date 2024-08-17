@@ -3,9 +3,8 @@ import { Container } from "./Login.styled";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StyledLink, StyledLoading } from "../../components/Form/Form.styled";
-import { useContext, useState } from "react";
-import Modal from "../../components/Modal/Modal";
+import { StyledLoading } from "../../components/Form/Form.styled";
+import { useContext } from "react";
 import { AdminContext } from "../../contexts/authAdmin";
 
 const loginSchema: z.ZodSchema = z.object({

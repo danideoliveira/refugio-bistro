@@ -1,11 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import Form from "../../components/Form/Form";
 import { Container } from "./Profile.styled";
-import { AuthContext, IFirebaseErrors } from "../../contexts/auth";
+import { AuthContext } from "../../contexts/auth";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
 import { StyledLoading } from "../../components/Form/Form.styled";
 import { MdEdit } from "react-icons/md";
@@ -16,22 +22,8 @@ import { FaTrashCan } from "react-icons/fa6";
 import { validateCPF } from "../../helpers/validateCpf";
 
 function Profile(): JSX.Element {
-  const { user, logout, deleteAccount, updateUser, loading, setLoading } =
-    useContext(AuthContext) as {
-      user: { uid: string; name: string; email: string };
-      setUser: (user: any) => void;
-      logout: () => void;
-      deleteAccount: (password: string) => void;
-      firebaseErrors: Array<IFirebaseErrors>;
-      updateUser: (
-        password: string,
-        newName: string,
-        newEmail: string,
-        newPhone: string,
-      ) => Promise<void>;
-      loading: boolean;
-      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    };
+  const { user, logout, deleteAccount, updateUser, loading, setLoading }: any =
+    useContext(AuthContext);
   const [password, setPassword] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
   const [newEmail, setNewEmail] = useState<string>("");
@@ -61,13 +53,13 @@ function Profile(): JSX.Element {
     password: z.string(),
   });
 
-  type FormData = z.infer<typeof schema>;
   useEffect(() => {
     if (!user?.uid) return;
     async function currentUser() {
-      const docRef = doc(db, "users", user.uid);
-      await getDoc(docRef).then((snapshot) => {
-        const data = snapshot.data();
+      const docRef: DocumentReference = doc(db, "users", user.uid);
+
+      await getDoc(docRef).then((snapshot: DocumentSnapshot) => {
+        const data: DocumentData | undefined = snapshot.data();
         if (data?.name) {
           setNewName(data?.name);
           setNewCPF(data?.cpf);
@@ -79,6 +71,8 @@ function Profile(): JSX.Element {
 
     currentUser();
   }, [user]);
+
+  type FormData = z.infer<typeof schema>;
 
   const {
     register,

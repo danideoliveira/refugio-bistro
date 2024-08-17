@@ -1,17 +1,19 @@
+import { ReactNode, useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../contexts/auth";
 
 export default function Private({
   children,
   reversePrivate,
 }: {
-  children: any;
+  children: ReactNode;
   reversePrivate?: boolean;
 }) {
-  const currentUser: string | null = localStorage.getItem("@currentUser");
+  const { user } = useContext<any>(AuthContext);
 
-  if (currentUser && !reversePrivate) {
+  if (user?.email && !reversePrivate) {
     return <Navigate to="/" />;
-  } else if (!currentUser && reversePrivate) {
+  } else if (!user?.email && reversePrivate) {
     return <Navigate to="/login" />;
   }
 
