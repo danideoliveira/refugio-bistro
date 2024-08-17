@@ -11,11 +11,12 @@ import {
 } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
 import { useContext, useEffect, useState } from "react";
-import { Container, Table } from "./Dashboard.styled";
+import { Container } from "./Dashboard.styled";
 import { AiFillLike } from "react-icons/ai";
 import { AdminContext } from "../../contexts/authAdmin";
 import Modal from "../../components/Modal/Modal";
 import { toast } from "react-toastify";
+import Table from "../../components/Table/Table";
 
 interface IReservation {
   uid?: string;

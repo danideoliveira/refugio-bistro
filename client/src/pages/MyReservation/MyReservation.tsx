@@ -1,10 +1,5 @@
 import { useContext, useState } from "react";
-import {
-  Container,
-  Reservations,
-  StyledLink,
-  Table,
-} from "./MyReservation.styled";
+import { Container, Reservations, StyledLink } from "./MyReservation.styled";
 import { AuthContext } from "../../contexts/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
@@ -13,6 +8,7 @@ import { TiDelete } from "react-icons/ti";
 import Modal from "../../components/Modal/Modal";
 import { IoIosArrowBack } from "react-icons/io";
 import { InfoSquare, ReviewGrid } from "../Reservation/Reservation.styled";
+import Table from "../../components/Table/Table";
 
 function MyReservation(): JSX.Element {
   const { user, setUser }: any = useContext(AuthContext);
