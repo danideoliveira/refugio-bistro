@@ -1,14 +1,14 @@
 import {
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  UserCredential,
 } from "firebase/auth";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect, ReactNode } from "react";
 import { auth } from "../services/firebaseConnection";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
-export const AdminContext = createContext({});
+export const AdminContext: React.Context<object> = createContext({});
 
 interface IUser {
   email: string;
@@ -20,11 +20,30 @@ export interface IFirebaseErrors {
   message: string;
 }
 
-function AdminProvider({ children }: any): JSX.Element {
+interface ComponentProps {
+  children: ReactNode;
+}
+
+function AdminProvider({ children }: ComponentProps): JSX.Element {
   const [user, setUser] = useState<IUser>({ email: "", password: "" });
-  const [currentList, setCurrentList] = useState<any>("all");
+  const [currentList, setCurrentList] = useState<string>("all");
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
+
+  useEffect(() => {
+    function checkLogin() {
+      onAuthStateChanged(auth, (user) => {
+        if (user?.email) {
+          setUser({ email: user.email });
+        } else {
+          setUser({ email: "" });
+          navigate("/login");
+        }
+      });
+    }
+
+    checkLogin();
+  }, [navigate]);
 
   function checkFirebaseError(err: any): void {
     const firebaseErrors: Array<IFirebaseErrors> = [
@@ -58,8 +77,8 @@ function AdminProvider({ children }: any): JSX.Element {
 
   async function signIn(email: string, password: string): Promise<void> {
     setLoading(true);
-    const adminEmail = import.meta.env.VITE_REACT_ADMIN_EMAIL;
-    const adminPassword = import.meta.env.VITE_REACT_ADMIN_PASS;
+    const adminEmail: string = import.meta.env.VITE_REACT_ADMIN_EMAIL;
+    const adminPassword: string = import.meta.env.VITE_REACT_ADMIN_PASS;
 
     await signInWithEmailAndPassword(auth, email, password)
       .then(() => {
@@ -87,7 +106,7 @@ function AdminProvider({ children }: any): JSX.Element {
       .catch((err) => console.log("Erro ao deslogar! " + err));
   }
 
-  function storageAdmin(data: any): void {
+  function storageAdmin(data: { email: string }): void {
     localStorage.setItem("@admin", JSON.stringify(data));
   }
 
