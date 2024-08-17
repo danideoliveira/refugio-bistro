@@ -1,6 +1,7 @@
 import { ReactNode, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AdminContext } from "../contexts/authAdmin";
+import { StyledLoading } from "../components/Form/Form.styled";
 
 export default function Private({
   children,
@@ -10,6 +11,26 @@ export default function Private({
   reversePrivate?: boolean;
 }) {
   const { user } = useContext<any>(AdminContext);
+
+  if (!user.email) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#fff",
+          fontSize: "3rem",
+          gap: "2rem",
+        }}
+      >
+        <StyledLoading />
+        Carregando...
+      </div>
+    );
+  }
 
   if (!user.email && reversePrivate) {
     return <Navigate to="/login" />;
