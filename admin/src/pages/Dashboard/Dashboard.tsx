@@ -7,6 +7,7 @@ import {
   DocumentReference,
   DocumentSnapshot,
   getDoc,
+  getDocs,
   onSnapshot,
   QueryDocumentSnapshot,
   QuerySnapshot,
@@ -178,7 +179,7 @@ function Dashboard(): JSX.Element {
     loadUsedReservations();
   }, []);
 
-  function sortReservations(list: Array<IReservation>) {
+  function sortReservations(list: Array<IReservation>): Array<IReservation> {
     return list.sort((a, b) => {
       const [dayA, monthA, yearA] = a.date.split("/").map(Number);
       const [dayB, monthB, yearB] = b.date.split("/").map(Number);
@@ -219,115 +220,136 @@ function Dashboard(): JSX.Element {
   }
 
   async function deleteReservation(reservation: IReservation): Promise<void> {
-    if (reservation.uid) {
-      const docRef: DocumentReference = doc(db, "users", reservation.uid);
+    const checkExpiredReservations = expiredList.filter(
+      (value: IReservation) =>
+        value.date === reservation.date && value.email === reservation.email
+    );
 
-      await getDoc(docRef).then(async (snapshot: DocumentSnapshot) => {
-        const data: DocumentData | undefined = snapshot.data();
+    if (checkExpiredReservations.length > 0) {
+      setOpenModal(false);
+      toast.error(
+        "A reserva feita nesta data já consta como expirada por este cliente."
+      );
+    } else {
+      if (reservation.uid) {
+        const docRef = doc(db, "users", reservation.uid);
 
-        if (data?.reservations) {
-          const otherReservation: Array<IReservation> =
-            data.reservations.filter(
+        await getDoc(docRef).then(async (snapshot) => {
+          const data = snapshot.data();
+
+          if (data?.reservations) {
+            const otherReservations = data.reservations.filter(
               (value: IReservation) => value.date !== reservation.date
             );
-          const expiredReservation: Array<IReservation> =
-            data.reservations.filter(
+
+            const expiredReservations = data.reservations.filter(
               (value: IReservation) => value.date === reservation.date
             );
 
-          expiredReservation.forEach(
-            (value: IReservation) => (value.status = "expired")
-          );
+            expiredReservations.forEach(
+              (value: IReservation) => (value.status = "expired")
+            );
 
-          const newData: Array<IReservation> = otherReservation
-            ? [...otherReservation]
-            : [];
+            const existingExpired = expiredReservations[0];
+            if (existingExpired) {
+              const existingExpiredQuery = collection(
+                db,
+                "expired_reservations"
+              );
+              const querySnapshot = await getDocs(existingExpiredQuery);
+              const existingDocs = querySnapshot.docs.map((doc) => doc.data());
 
-          const { name, email, phone, ...restOfExpiredReservation } =
-            expiredReservation[0] || {};
+              const alreadyExists = existingDocs.some(
+                (doc) =>
+                  doc.date === existingExpired.date &&
+                  doc.email === existingExpired.email
+              );
 
-          await addDoc(collection(db, "expired_reservations"), {
-            name: reservation.name || name,
-            email: reservation.email || email,
-            phone: reservation.phone || phone,
-            ...restOfExpiredReservation,
-          });
+              if (!alreadyExists) {
+                await addDoc(collection(db, "expired_reservations"), {
+                  name: reservation.name,
+                  email: reservation.email,
+                  phone: reservation.phone,
+                  ...existingExpired,
+                });
+              }
+            }
 
-          await updateDoc(docRef, {
-            reservations: newData,
-          });
-        }
-      });
+            await updateDoc(docRef, {
+              reservations: otherReservations,
+            });
+          }
+        });
+      }
     }
   }
 
   async function handleSetUsed(usedReservation: IReservation): Promise<void> {
-    const check: Array<IReservation> = usedList.filter(
+    const checkUsedReservations: Array<IReservation> = usedList.filter(
       (value: IReservation) =>
         value.date === usedReservation.date &&
         value.email == usedReservation.email
     );
 
-    if (check.length > 0) {
+    if (checkUsedReservations.length > 0) {
       setOpenModal(false);
       toast.error(
         "A reserva feita nesta data já consta como utilizada por este cliente."
       );
-      return;
-    }
+    } else {
+      if (usedReservation.uid) {
+        const docRef: DocumentReference = doc(db, "users", usedReservation.uid);
 
-    if (usedReservation.uid) {
-      const docRef: DocumentReference = doc(db, "users", usedReservation.uid);
+        try {
+          await getDoc(docRef)
+            .then(async (snapshot: DocumentSnapshot) => {
+              const data: DocumentData | undefined = snapshot.data();
 
-      try {
-        await getDoc(docRef)
-          .then(async (snapshot: DocumentSnapshot) => {
-            const data: DocumentData | undefined = snapshot.data();
+              if (data?.reservations) {
+                const otherReservation: Array<IReservation> =
+                  data.reservations.filter(
+                    (value: IReservation) => value.date !== usedReservation.date
+                  );
+                const usedReservationFiltered: Array<IReservation> =
+                  data.reservations.filter(
+                    (value: IReservation) => value.date === usedReservation.date
+                  );
 
-            if (data?.reservations) {
-              const otherReservation: Array<IReservation> =
-                data.reservations.filter(
-                  (value: IReservation) => value.date !== usedReservation.date
+                usedReservationFiltered.forEach(
+                  (value: IReservation) => (value.status = "used")
                 );
-              const usedReservationFiltered: Array<IReservation> =
-                data.reservations.filter(
-                  (value: IReservation) => value.date === usedReservation.date
-                );
 
-              usedReservationFiltered.forEach(
-                (value: IReservation) => (value.status = "used")
-              );
+                const newData: Array<IReservation> = otherReservation
+                  ? [...otherReservation]
+                  : [];
 
-              const newData: Array<IReservation> = otherReservation
-                ? [...otherReservation]
-                : [];
+                const { name, email, phone, ...restOfUsedReservation } =
+                  usedReservationFiltered[0] || {};
 
-              const { name, email, phone, ...restOfUsedReservation } =
-                usedReservationFiltered[0] || {};
+                await addDoc(collection(db, "used_reservations"), {
+                  name: usedReservation.name || name,
+                  email: usedReservation.email || email,
+                  phone: usedReservation.phone || phone,
+                  ...restOfUsedReservation,
+                });
 
-              await addDoc(collection(db, "used_reservations"), {
-                name: usedReservation.name || name,
-                email: usedReservation.email || email,
-                phone: usedReservation.phone || phone,
-                ...restOfUsedReservation,
-              });
-
-              await updateDoc(docRef, {
-                reservations: newData,
-              }).then(() => {
-                toast.success(
-                  `Presença de ${usedReservation.name} confirmada!`
-                );
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            checkFirebaseError(err);
-          })
-          .finally(() => setOpenModal(false));
-      } catch (err) {
-        console.log(err);
+                await updateDoc(docRef, {
+                  reservations: newData,
+                }).then(() => {
+                  toast.success(
+                    `Presença de ${usedReservation.name} confirmada!`
+                  );
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              checkFirebaseError(err);
+            })
+            .finally(() => setOpenModal(false));
+        } catch (err) {
+          console.log(err);
+        }
       }
     }
   }
