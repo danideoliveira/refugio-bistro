@@ -62,6 +62,9 @@ export const palette = {
   reservation_button_color: colors.white.v1,
   reservation_button_background: colors.green.v2,
 
+  table_title_color: colors.white.v1,
+  table_background_color: colors.green.v2,
+
   dropdown_background: colors.white.v1,
   dropdown_title_color: colors.black.v1,
   dropdown_text_color: colors.black.v1,
