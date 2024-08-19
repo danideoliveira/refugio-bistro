@@ -8,7 +8,6 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     box-sizing: border-box;
     font-family: "Source Sans 3", sans-serif;
-    /* outline: 1px solid rebeccapurple; */
   }
   
   .container {
