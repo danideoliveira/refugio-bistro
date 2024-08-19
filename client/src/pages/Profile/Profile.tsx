@@ -20,6 +20,7 @@ import { IoSettingsSharp } from "react-icons/io5";
 import Modal from "../../components/Modal/Modal";
 import { FaTrashCan } from "react-icons/fa6";
 import { validateCPF } from "../../helpers/validateCpf";
+import Loading from "../../components/Loading/Loading";
 
 function Profile(): JSX.Element {
   const { user, logout, deleteAccount, updateUser, loading, setLoading }: any =
@@ -239,10 +240,7 @@ function Profile(): JSX.Element {
             </Form>
           </>
         ) : (
-          <span className="profile-loading">
-            <StyledLoading />
-            Carregando...
-          </span>
+          <Loading />
         )}
       </div>
 

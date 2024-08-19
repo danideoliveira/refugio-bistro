@@ -31,17 +31,6 @@ export const Container = styled.section`
     gap: 1rem 3rem;
   }
 
-  .profile-loading {
-    ${setFlexbox("center", "center", "row")}
-    gap: 2rem;
-    font-size: 2rem;
-    color: ${palette.profile_button_background};
-
-    svg {
-      font-size: 3rem;
-    }
-  }
-
   .input-square {
     max-width: 21rem;
   }
