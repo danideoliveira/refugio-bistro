@@ -1,7 +1,7 @@
 import { ReactNode, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../contexts/auth";
-import { StyledLoading } from "../components/Form/Form.styled";
+import Loading from "../components/Loading/Loading";
 
 export default function Private({
   children,
@@ -11,30 +11,15 @@ export default function Private({
   reversePrivate?: boolean;
 }) {
   const { user } = useContext<any>(AuthContext);
+  const userLocalStorage = localStorage.getItem("@currentUser");
 
-  if (!user) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "#fff",
-          fontSize: "3rem",
-          gap: "2rem",
-        }}
-      >
-        <StyledLoading />
-        Carregando...
-      </div>
-    );
+  if (userLocalStorage && !user) {
+    return <Loading />;
   }
 
-  if (user?.email && !reversePrivate) {
+  if (user && !reversePrivate) {
     return <Navigate to="/" />;
-  } else if (!user?.email && reversePrivate) {
+  } else if (!user && reversePrivate) {
     return <Navigate to="/login" />;
   }
 
