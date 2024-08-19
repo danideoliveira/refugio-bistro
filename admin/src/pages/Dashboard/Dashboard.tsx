@@ -21,9 +21,11 @@ import { AdminContext } from "../../contexts/authAdmin";
 import Modal from "../../components/Modal/Modal";
 import { toast } from "react-toastify";
 import Table from "../../components/Table/Table";
+import DateDropdown from "../../components/DatePicker/DatePicker";
 
 interface IReservation {
   uid?: string;
+  cpf: string;
   name: string;
   phone: string;
   email: string;
@@ -78,6 +80,7 @@ function Dashboard(): JSX.Element {
               name: doc.data().name,
               phone: doc.data().phone,
               email: doc.data().email,
+              cpf: doc.data().cpf,
               date: currentReservation.date,
               hour: currentReservation.hour,
               people: currentReservation.people,
@@ -119,6 +122,7 @@ function Dashboard(): JSX.Element {
           const data: IReservation = {
             uid: doc.id,
             name: docReservations.name,
+            cpf: docReservations.cpf,
             phone: docReservations.phone,
             email: docReservations.email,
             date: docReservations.date,
@@ -157,6 +161,7 @@ function Dashboard(): JSX.Element {
           const data: IReservation = {
             uid: doc.id,
             name: docReservations.name,
+            cpf: docReservations.cpf,
             phone: docReservations.phone,
             email: docReservations.email,
             date: docReservations.date,
@@ -222,7 +227,7 @@ function Dashboard(): JSX.Element {
   async function deleteReservation(reservation: IReservation): Promise<void> {
     const checkExpiredReservations = expiredList.filter(
       (value: IReservation) =>
-        value.date === reservation.date && value.email === reservation.email
+        value.date === reservation.date && value.cpf === reservation.cpf
     );
 
     if (checkExpiredReservations.length > 0) {
@@ -287,8 +292,7 @@ function Dashboard(): JSX.Element {
   async function handleSetUsed(usedReservation: IReservation): Promise<void> {
     const checkUsedReservations: Array<IReservation> = usedList.filter(
       (value: IReservation) =>
-        value.date === usedReservation.date &&
-        value.email == usedReservation.email
+        value.date === usedReservation.date && value.cpf == usedReservation.cpf
     );
 
     if (checkUsedReservations.length > 0) {
@@ -403,6 +407,13 @@ function Dashboard(): JSX.Element {
     return sortedList;
   };
 
+  function shortenString(str: string, maxLength: number): string {
+    if (str.length > maxLength) {
+      return str.substring(0, maxLength) + "...";
+    }
+    return str;
+  }
+
   function getReservationStatus(reservation: IReservation): JSX.Element {
     type ReservationElement = {
       action: string;
@@ -424,7 +435,7 @@ function Dashboard(): JSX.Element {
               <AiFillLike
                 color={reservation.status !== "open" ? "green" : ""}
               />
-              Confirmar presença
+              Confirmar
             </button>
           </td>
         ),
@@ -468,17 +479,7 @@ function Dashboard(): JSX.Element {
               </div>
 
               <div className="box-select-list">
-                <label>Data</label>
-                <select
-                  onChange={(e) => {
-                    setDateFilter(e.target.value);
-                  }}
-                >
-                  <option>Qualquer data</option>
-                  {arrDate.map((value, index) => (
-                    <option key={index}>{value}</option>
-                  ))}
-                </select>
+                <DateDropdown handleChange={setDateFilter} />{" "}
               </div>
             </div>
 
@@ -522,8 +523,12 @@ function Dashboard(): JSX.Element {
                       <td data-label="Pessoas">{reservation.people}</td>
                       <td data-label="Ambiente">{reservation.place}</td>
                       <td data-label="Unidade">{reservation.location}</td>
-                      <td data-label="Cliente">{reservation.name}</td>
-                      <td data-label="Email">{reservation.email}</td>
+                      <td data-label="Cliente">
+                        {shortenString(reservation.name, 25)}
+                      </td>
+                      <td data-label="Email">
+                        {shortenString(reservation.email, 40)}
+                      </td>
                       <td data-label="Telefone">{reservation.phone}</td>
                       <td data-label="Momento">{reservation.moment}</td>
                       {reservation.status && getReservationStatus(reservation)}
@@ -543,6 +548,12 @@ function Dashboard(): JSX.Element {
           setCondition={setOpenModal}
         >
           <h2>Confirmar presença de {customer?.name}?</h2>
+          <div>
+            <span>Email:</span>
+            <h3>{customer?.email}</h3>
+            <span>Telefone:</span>
+            <h3>{customer?.phone}</h3>
+          </div>
           <button
             className="modal-button"
             onClick={() => handleSetUsed(customer)}
