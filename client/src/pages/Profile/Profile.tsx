@@ -92,7 +92,7 @@ function Profile(): JSX.Element {
   return (
     <Container>
       <div className="box-profile">
-        {user?.name ? (
+        {user.name ? (
           <>
             <div className="profile-configuration">
               <button

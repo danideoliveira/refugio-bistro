@@ -3,7 +3,7 @@ import { setFlexbox } from "../../helpers/mixins";
 import { palette } from "../../helpers/palette";
 
 export const Container = styled.div`
-  width: 20rem;
+  width: 22rem;
   position: relative;
 
   .res-select-box {
@@ -30,12 +30,12 @@ export const Container = styled.div`
 
     label {
       cursor: pointer;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 700;
     }
 
     span {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 500;
     }
   }
@@ -47,12 +47,13 @@ export const Container = styled.div`
   ul {
     width: 100%;
     position: absolute;
-    bottom: -8rem;
+    bottom: -8.5rem;
     list-style: none;
     left: 0;
     box-shadow: 0px 2px 5px 0px rgb(0, 0, 0, 0.25);
     border-radius: 5px;
-    height: 7.5rem;
+    height: auto;
+    max-height: 8rem;
     overflow-x: hidden;
     display: none;
     z-index: 99;
@@ -63,7 +64,7 @@ export const Container = styled.div`
       cursor: pointer;
       transition: 0.3s all ease;
       width: 100%;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 500;
 
       &:hover {

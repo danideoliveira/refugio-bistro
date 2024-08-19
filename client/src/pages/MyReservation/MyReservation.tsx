@@ -93,7 +93,7 @@ function MyReservation(): JSX.Element {
                         type="button"
                         onClick={() => handleShowModal(currentReservation)}
                       >
-                        <TiDelete /> Cancelar reserva
+                        <TiDelete /> Cancelar
                       </button>
                     </td>
                   </tr>

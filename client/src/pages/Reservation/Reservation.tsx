@@ -14,6 +14,7 @@ import {
 import { toast } from "react-toastify";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { StyledLoading } from "../../components/Form/Form.styled";
+import { BsBookmarkCheckFill } from "react-icons/bs";
 
 function Reservation(): JSX.Element {
   const { user, setUser } = useContext<any>(AuthContext);
@@ -162,7 +163,9 @@ function Reservation(): JSX.Element {
                 !lastStep ? (
                   "Próximo"
                 ) : (
-                  "Reservar"
+                  <>
+                    Reservar <BsBookmarkCheckFill />
+                  </>
                 )
               ) : (
                 <StyledLoading />

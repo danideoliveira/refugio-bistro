@@ -18,7 +18,7 @@ export const Box = styled.div`
   ${setFlexbox("center", "center", "row")}
   width: 80%;
   max-width: 70rem;
-  height: 50rem;
+  height: 53rem;
   border-radius: 5px;
   overflow: hidden;
 
@@ -32,12 +32,12 @@ export const Box = styled.div`
   }
 
   h2 {
-    font-size: 2.4rem;
+    font-size: 3rem;
     color: ${palette.reservation_title_color};
   }
 
   span {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: ${palette.reservation_text_color};
     font-weight: 500;
   }
@@ -61,7 +61,7 @@ export const Box = styled.div`
 
   .res-drop-list {
     ${setFlexbox("center", "center", "column")}
-    gap: 2rem;
+    gap: 1rem;
   }
 
   @media screen and (max-width: 780px) {
@@ -87,17 +87,20 @@ export const BackButton = styled.button`
 
 export const NextButton = styled.button`
   ${setFlexbox("center", "center", "row")}
-  padding: 0.5rem 2rem;
-  height: 3rem;
-  width: 10rem;
+  height: 3.5rem;
+  width: 12rem;
   border: none;
   border-radius: 5px;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   background-color: ${palette.reservation_button_background};
   color: ${palette.reservation_button_color};
   font-weight: 600;
   transition: 0.3s all ease;
   cursor: pointer;
+
+  svg {
+    margin-left: 0.5rem;
+  }
 
   &:hover {
     filter: contrast(1.5);
@@ -110,8 +113,8 @@ export const LocationList = styled.ul`
 
   button {
     ${setFlexbox("flex-start", "center", "row")}
-    font-size: 1.6rem;
-    width: 18rem;
+    font-size: 1.8rem;
+    width: 25rem;
     padding: 1rem;
     gap: 2rem;
     border-radius: 5px;
@@ -150,12 +153,12 @@ export const InfoSquare = styled.div`
   padding: 1rem;
 
   label {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
   }
 
   p {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 400;
   }
 `;

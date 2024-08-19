@@ -47,6 +47,10 @@ export const Container = styled.section`
     }
   }
 
+  .modal-my-reservation .modal-button-delete {
+    font-size: 1.8rem;
+  }
+
   @media screen and (max-width: 780px) {
     height: auto;
     min-height: 100vh;
@@ -74,13 +78,19 @@ export const Container = styled.section`
 
 export const StyledLink = styled(Link)`
   padding: 0.5rem 1rem;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   text-decoration: none;
   transition: 0.3s all ease;
-  background-color: ${palette.reservation_button_background};
-  color: ${palette.reservation_button_color};
+  border: 2px solid ${palette.reservation_button_background};
+  color: ${palette.reservation_button_background};
   font-weight: 500;
   border-radius: 5px;
+  transition: 0.3s all ease;
+
+  &:hover {
+    color: ${palette.reservation_button_color};
+    background-color: ${palette.reservation_button_background};
+  }
 `;
 
 export const Reservations = styled.div`
@@ -94,11 +104,11 @@ export const Reservations = styled.div`
 
   h2 {
     color: ${palette.form_title_color};
-    font-size: 2.6rem;
+    font-size: 3rem;
   }
 
   label {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     font-weight: 600;
     color: ${palette.form_text_color};
   }
