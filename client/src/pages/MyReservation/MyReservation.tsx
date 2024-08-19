@@ -34,6 +34,7 @@ function MyReservation(): JSX.Element {
 
       const updatedUser = {
         name: user.name,
+        cpf: user.cpf,
         email: user.email,
         uid: user.uid,
         reservations: updatedReservations,

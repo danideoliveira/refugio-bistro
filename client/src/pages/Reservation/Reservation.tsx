@@ -61,6 +61,7 @@ function Reservation(): JSX.Element {
     const moment: Date = new Date();
 
     const newReservation = {
+      cpf: user.cpf,
       location,
       date,
       hour,
@@ -96,6 +97,7 @@ function Reservation(): JSX.Element {
 
           const updatedSnapshot: DocumentSnapshot = await getDoc(docRef);
           const data: DocumentData | undefined = updatedSnapshot.data();
+
           setUser({ uid: user.uid, ...data });
           localStorage.setItem(
             "@currentUser",

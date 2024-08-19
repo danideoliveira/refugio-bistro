@@ -101,6 +101,7 @@ function AuthProvider({ children }: ComponentProps): JSX.Element {
               const data: IUserData = {
                 uid: user.uid,
                 name: snapData?.name,
+                cpf: snapData?.cpf,
                 email: snapData?.email,
                 reservations: snapData?.reservations,
               };
@@ -171,6 +172,7 @@ function AuthProvider({ children }: ComponentProps): JSX.Element {
           }).then(() => {
             const data: IUserData = {
               uid,
+              cpf,
               name,
               email,
               reservations: [],
@@ -204,6 +206,7 @@ function AuthProvider({ children }: ComponentProps): JSX.Element {
             const data: IUserData = {
               uid: value.user.uid,
               name: snapData?.name,
+              cpf: snapData?.cpf,
               email: snapData?.email,
               reservations: snapData?.reservations,
             };
