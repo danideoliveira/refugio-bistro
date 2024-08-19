@@ -62,10 +62,11 @@ export const Container = styled.header`
   @media screen and (max-width: 780px) {
     ${setFlexbox("flex-start", "center", "column")}
     padding-top: 0rem;
+    top: 0;
     height: 100vh;
     width: 50%;
     position: fixed;
-    z-index: 999;
+    z-index: 9999;
     transition: 0.5s all ease-in-out;
 
     .header-logo {
@@ -140,8 +141,8 @@ export const StyledButton = styled.button`
   }
 
   &.active {
-    background: ${palette.location_button_color};
-    color: ${palette.location_button_background};
+    background: ${palette.header_link_color};
+    color: ${palette.header_link_background};
   }
 
   @media screen and (max-width: 780px) {

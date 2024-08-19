@@ -8,7 +8,7 @@ export const Container = styled.table`
   padding: 0;
   table-layout: fixed;
   border-collapse: collapse;
-  z-index: 99;
+  z-index: 95;
 
   & .action-row button {
     ${setFlexbox("center", "center", "row")}

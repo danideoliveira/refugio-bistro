@@ -4,12 +4,17 @@ import { palette } from "../../helpers/palette";
 
 export const Container = styled.section`
   ${setFlexbox("center", "center", "column")}
-  width: 100%;
+  width: 95%;
   height: auto;
   background-color: #ffffff;
   padding: 5rem 0;
+  margin: 0 auto;
+  border-radius: 5px;
+  margin-top: 3rem;
 
   .box-dashboard {
+    min-width: 70rem;
+
     h1 {
       font-size: 3rem;
       width: 100%;
@@ -38,6 +43,16 @@ export const Container = styled.section`
     option {
       font-size: 1.5rem;
     }
+
+    select {
+      box-shadow: 1px 1px 1px 1px #bbbbbb;
+      border: none;
+      border-radius: 5px;
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
   .dashboard-info {
@@ -58,7 +73,7 @@ export const Container = styled.section`
   .no-reservations {
     ${setFlexbox("center", "center", "row")}
     width: 100%;
-    height: 30rem;
+    height: 20rem;
     font-size: 2rem;
     font-weight: 600;
   }
@@ -68,6 +83,15 @@ export const Container = styled.section`
       ${setFlexbox("center", "center", "column")}
       width: 30rem;
       gap: 3rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    span {
+      color: ${palette.form_text_color};
     }
 
     .modal-button {
@@ -102,6 +126,15 @@ export const Container = styled.section`
       ${setFlexbox("center", "center", "column")}
       width: 90%;
       gap: 3rem;
+    }
+
+    .box-selects {
+      flex-direction: column;
+    }
+
+    .box-select-list,
+    select {
+      width: 100%;
     }
   }
 `;
