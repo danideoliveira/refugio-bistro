@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { images } from "../../components/Images/Images";
 import { FaClock, FaLocationDot } from "react-icons/fa6";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import { FaCalendarAlt, FaUserFriends } from "react-icons/fa";
 import { MdTableRestaurant } from "react-icons/md";
 import { InfoSquare, LocationList, ReviewGrid } from "./Reservation.styled";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../services/firebaseConnection";
+import { StyledLoading } from "../../components/Form/Form.styled";
 
 interface ILocation {
   image: string;
@@ -66,47 +69,93 @@ export const LocationInfo = (props: any): JSX.Element => {
 };
 
 export const GeneralInfo = (props: any): JSX.Element => {
-  const tomorrow: Date = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const arrDate: Array<string> = [tomorrow.toLocaleDateString()];
+  const today: Date = new Date();
+  today.setDate(today.getDate());
+  const arrDate: Array<string> = useMemo(() => [], []);
+  const itemsVerified: Array<string> = useMemo(() => [], []);
+  const [defaultVerified, setDefaultVerified] = useState<any>([]);
 
   for (let i = 0; i < 5; i++) {
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    arrDate.push(tomorrow.toLocaleDateString());
+    today.setDate(today.getDate() + 1);
+    arrDate.push(today.toLocaleDateString());
   }
+
+  useEffect(() => {
+    async function getEsgoted() {
+      const postsRef = collection(db, "users");
+
+      await getDocs(postsRef).then(async (snapshot) => {
+        const list: Array<any> = [];
+
+        snapshot.forEach((doc) => {
+          if (doc.data().reservations.length > 0) {
+            doc.data().reservations.forEach((value: any) => {
+              list.push(value.date);
+            });
+          }
+        });
+
+        arrDate.forEach((item) => {
+          const filteredList: Array<any> = list.filter(
+            (value) => value === item,
+          );
+
+          if (filteredList.length > 10) {
+            itemsVerified.push(`${item} (ESGOTADO)`);
+          } else {
+            itemsVerified.push(item);
+            setDefaultVerified((prev: any) => [...prev, item]);
+          }
+        });
+      });
+    }
+
+    getEsgoted();
+  }, [itemsVerified, arrDate]);
+
+  useEffect(() => {
+    if (defaultVerified[0] && defaultVerified[0].includes("/")) {
+      setDefaultVerified(defaultVerified[0]);
+      props.chosenDate[1](defaultVerified[0]);
+    }
+  }, [defaultVerified, props.chosenDate]);
 
   return (
     <>
-      <div className="res-drop-list">
-        <Dropdown
-          title="Dia da Reserva"
-          icon={FaCalendarAlt}
-          items={arrDate}
-          defaultValue={props.chosenDate[0]}
-          action={props.chosenDate[1]}
-        />
-        <Dropdown
-          title="Horário"
-          icon={FaClock}
-          items={["18:00", "19:00", "20:00", "21:00", "22:00"]}
-          defaultValue={props.chosenHour[0]}
-          action={props.chosenHour[1]}
-        />
-        <Dropdown
-          title="Pessoas"
-          icon={FaUserFriends}
-          items={["2", "4", "6", "8", "10"]}
-          defaultValue={props.chosenPeople[0]}
-          action={props.chosenPeople[1]}
-        />
-        <Dropdown
-          title="Ambiente"
-          icon={MdTableRestaurant}
-          items={["Térreo", "Superior"]}
-          defaultValue={props.chosenPlace[0]}
-          action={props.chosenPlace[1]}
-        />
-      </div>
+      {defaultVerified[0] ? (
+        <div className="res-drop-list">
+          <Dropdown
+            title="Dia da Reserva"
+            icon={FaCalendarAlt}
+            items={itemsVerified}
+            defaultValue={defaultVerified[0]}
+            action={props.chosenDate[1]}
+          />
+          <Dropdown
+            title="Horário"
+            icon={FaClock}
+            items={["18:00", "19:00", "20:00", "21:00", "22:00"]}
+            defaultValue={props.chosenHour[0]}
+            action={props.chosenHour[1]}
+          />
+          <Dropdown
+            title="Pessoas"
+            icon={FaUserFriends}
+            items={["2", "4", "6", "8", "10"]}
+            defaultValue={props.chosenPeople[0]}
+            action={props.chosenPeople[1]}
+          />
+          <Dropdown
+            title="Ambiente"
+            icon={MdTableRestaurant}
+            items={["Térreo", "Superior"]}
+            defaultValue={props.chosenPlace[0]}
+            action={props.chosenPlace[1]}
+          />
+        </div>
+      ) : (
+        <StyledLoading />
+      )}
     </>
   );
 };

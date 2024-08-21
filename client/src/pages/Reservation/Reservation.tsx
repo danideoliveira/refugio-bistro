@@ -7,6 +7,7 @@ import { db } from "../../services/firebaseConnection";
 import {
   doc,
   DocumentData,
+  DocumentReference,
   DocumentSnapshot,
   getDoc,
   updateDoc,
@@ -73,8 +74,8 @@ function Reservation(): JSX.Element {
     };
 
     let reservationsUpdated: Array<object> = [];
-    const docRef = doc(db, "users", user.uid);
-    let reservationDenied = false;
+    const docRef: DocumentReference = doc(db, "users", user.uid);
+    let reservationDenied: boolean = false;
 
     try {
       const snapshot: DocumentSnapshot = await getDoc(docRef);

@@ -67,6 +67,11 @@ export const Container = styled.div`
       font-size: 1.5rem;
       font-weight: 500;
 
+      span {
+        font-size: 1.5rem;
+        color: #b1b1b1;
+      }
+
       &:hover {
         background-color: #e0e0e0;
       }

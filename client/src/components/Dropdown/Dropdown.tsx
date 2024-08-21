@@ -18,9 +18,9 @@ const Dropdown: React.FC<IDropdown> = ({
   action,
   defaultValue,
 }) => {
-  const [itemSelected, setSelectedItem] = useState<string>(defaultValue);
   const [open, setOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [itemSelected, setSelectedItem] = useState<string>(defaultValue);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -57,11 +57,20 @@ const Dropdown: React.FC<IDropdown> = ({
         </div>
       </div>
       <ul style={{ display: open ? "block" : "none" }}>
-        {items.map((currentItem) => (
-          <li key={currentItem} onClick={() => handleItemClick(currentItem)}>
-            {currentItem}
-          </li>
-        ))}
+        {items.map((currentItem) =>
+          currentItem.includes("ESGOTADO") ? (
+            <li key={currentItem} style={{ color: "#b1b1b1" }}>
+              <span style={{ textDecorationLine: "line-through" }}>
+                {currentItem.split(" ")[0]}
+              </span>{" "}
+              ESGOTADO
+            </li>
+          ) : (
+            <li key={currentItem} onClick={() => handleItemClick(currentItem)}>
+              {currentItem}
+            </li>
+          ),
+        )}
       </ul>
     </Container>
   );
