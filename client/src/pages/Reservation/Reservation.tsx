@@ -23,7 +23,7 @@ function Reservation(): JSX.Element {
   tomorrow.setDate(tomorrow.getDate() + 1);
   const arrDate: Array<string> = [tomorrow.toLocaleDateString()];
   const [location, setLocation] = useState<string>("Rio de Janeiro");
-  const [date, setDate] = useState<string>(tomorrow.toLocaleDateString());
+  const [date, setDate] = useState<string>();
   const [hour, setHour] = useState<string>("18:00");
   const [people, setPeople] = useState<string>("2");
   const [place, setPlace] = useState<string>("Térreo");
@@ -154,6 +154,7 @@ function Reservation(): JSX.Element {
             <div className="res-info-box">{reservationSteps[steps]}</div>
 
             <NextButton
+              disabled={steps > 0 && date === undefined}
               onClick={async () =>
                 !lastStep
                   ? handleSetSteps(StepsAction.NEXT)
