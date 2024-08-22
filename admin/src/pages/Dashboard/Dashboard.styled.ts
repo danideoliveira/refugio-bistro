@@ -11,6 +11,7 @@ export const Container = styled.section`
   margin: 0 auto;
   border-radius: 5px;
   margin-top: 3rem;
+  margin-bottom: 3rem;
 
   .box-dashboard {
     min-width: 70rem;

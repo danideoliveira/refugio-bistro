@@ -58,7 +58,13 @@ function MyReservation(): JSX.Element {
   return (
     <Container>
       <Reservations>
-        <h2>Minhas Reservas</h2>
+        <h2>
+          Minhas Reservas
+          <span>
+            OBS: A reservas possuem 30 minutos de tolerância, atente-se aos
+            horários.
+          </span>
+        </h2>
 
         {user?.reservations.length > 0 ? (
           <Table>

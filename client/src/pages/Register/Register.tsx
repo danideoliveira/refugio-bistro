@@ -7,9 +7,13 @@ import { StyledLink, StyledLoading } from "../../components/Form/Form.styled";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { validateCPF } from "../../helpers/validateCpf";
+import { toast } from "react-toastify";
 
 const schema: z.ZodSchema = z.object({
-  name: z.string().min(1, "O campo nome é obrigatório."),
+  name: z
+    .string()
+    .min(1, "O campo nome é obrigatório.")
+    .max(50, "Quantidade de caracteres excedida"),
   email: z
     .string()
     .email("Digite um email válido")
@@ -39,7 +43,12 @@ function Register(): JSX.Element {
 
   async function onSubmit(data: any): Promise<void> {
     const { name, cpf, email, phone, password } = data;
-    await signUp(name, cpf, email, phone, password);
+
+    if (name.split(" ").length === 1) {
+      toast.error("Digite o seu sobrenome");
+    } else {
+      await signUp(name.toUpperCase(), cpf, email, phone, password);
+    }
   }
 
   return (
@@ -50,7 +59,7 @@ function Register(): JSX.Element {
 
           <div className="box-inputs">
             <div className="input-square full">
-              <label>Nome Completo</label>
+              <label>Nome</label>
               <input {...register("name")} />
               <span
                 className="error"
@@ -66,7 +75,7 @@ function Register(): JSX.Element {
 
             <div className="input-square">
               <label>CPF</label>
-              <input {...register("cpf")} />
+              <input type="number" {...register("cpf")} />
               <span
                 className="error"
                 style={{
@@ -96,7 +105,7 @@ function Register(): JSX.Element {
 
             <div className="input-square">
               <label>Telefone</label>
-              <input {...register("phone")} />
+              <input type="number" {...register("phone")} />
               <span
                 className="error"
                 style={{

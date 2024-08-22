@@ -72,6 +72,17 @@ export const Container = styled.form`
     }
   }
 
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
   button {
     ${setFlexbox("center", "center", "row")}
     padding: 1rem 2rem;

@@ -21,6 +21,7 @@ import Modal from "../../components/Modal/Modal";
 import { FaTrashCan } from "react-icons/fa6";
 import { validateCPF } from "../../helpers/validateCpf";
 import Loading from "../../components/Loading/Loading";
+import { toast } from "react-toastify";
 
 function Profile(): JSX.Element {
   const { user, logout, deleteAccount, updateUser, loading, setLoading }: any =
@@ -36,7 +37,11 @@ function Profile(): JSX.Element {
   const [showModalPassword, setShowModalPassword] = useState<boolean>(false);
 
   const schema: z.ZodSchema = z.object({
-    name: z.string().min(1, "O campo nome é obrigatório!").default(user?.name),
+    name: z
+      .string()
+      .min(1, "O campo nome é obrigatório!")
+      .max(50, "Quantidade de caracteres excedida")
+      .default(user?.name),
     email: z.string().email("Digite um email válido").default(user?.email),
     cpf: z
       .string()
@@ -84,10 +89,20 @@ function Profile(): JSX.Element {
   });
 
   function handleUpdateUser(): void {
-    updateUser(password, newName, newEmail, newPhone);
-    setPassword("");
-    setDisabledInput(true);
-    setShowModalPassword(false);
+    if (newName.split(" ").length === 1) {
+      toast.error("Digite o seu sobrenome");
+      setShowModalPassword(false);
+      setPassword("");
+    } else if (newName === "" || newEmail === "" || newPhone === "") {
+      toast.error("Preencha todos os campos!");
+      setShowModalPassword(false);
+      setPassword("");
+    } else {
+      updateUser(password, newName.toUpperCase(), newEmail, newPhone);
+      setPassword("");
+      setDisabledInput(true);
+      setShowModalPassword(false);
+    }
   }
 
   return (
@@ -114,9 +129,9 @@ function Profile(): JSX.Element {
               <h2>Meu Perfil</h2>
               <div className="box-inputs">
                 <div className="input-square">
-                  <label>Nome Completo</label>
+                  <label>Nome</label>
                   <input
-                    value={newName}
+                    value={newName.toUpperCase()}
                     {...register("name")}
                     disabled={disabledInput}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -183,6 +198,7 @@ function Profile(): JSX.Element {
                   <label>Telefone</label>
                   <input
                     value={newPhone}
+                    type="number"
                     {...register("phone")}
                     disabled={disabledInput}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

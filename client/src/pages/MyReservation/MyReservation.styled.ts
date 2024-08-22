@@ -103,8 +103,17 @@ export const Reservations = styled.div`
   border-radius: 5px;
 
   h2 {
+    ${setFlexbox("center", "center", "column")}
     color: ${palette.form_title_color};
     font-size: 3rem;
+
+    span {
+      max-width: 30rem;
+      text-align: center;
+      color: #0e0e0e;
+      font-size: 1.4rem;
+      font-weight: 400;
+    }
   }
 
   label {

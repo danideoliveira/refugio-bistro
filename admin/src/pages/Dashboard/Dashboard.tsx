@@ -77,7 +77,7 @@ function Dashboard(): JSX.Element {
           docReservations.forEach(async (currentReservation: IReservation) => {
             const data: IReservation = {
               uid: doc.id,
-              name: doc.data().name,
+              name: doc.data().name.toUpperCase(),
               phone: doc.data().phone,
               email: doc.data().email,
               cpf: doc.data().cpf,
@@ -121,7 +121,7 @@ function Dashboard(): JSX.Element {
 
           const data: IReservation = {
             uid: doc.id,
-            name: docReservations.name,
+            name: docReservations.name.toUpperCase(),
             cpf: docReservations.cpf,
             phone: docReservations.phone,
             email: docReservations.email,
@@ -160,7 +160,7 @@ function Dashboard(): JSX.Element {
 
           const data: IReservation = {
             uid: doc.id,
-            name: docReservations.name,
+            name: docReservations.name.toUpperCase(),
             cpf: docReservations.cpf,
             phone: docReservations.phone,
             email: docReservations.email,
@@ -524,7 +524,7 @@ function Dashboard(): JSX.Element {
                       <td data-label="Ambiente">{reservation.place}</td>
                       <td data-label="Unidade">{reservation.location}</td>
                       <td data-label="Cliente">
-                        {shortenString(reservation.name, 25)}
+                        {shortenString(reservation.name, 20)}
                       </td>
                       <td data-label="Email">
                         {shortenString(reservation.email, 40)}
