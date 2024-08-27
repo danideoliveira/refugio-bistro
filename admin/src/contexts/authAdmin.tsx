@@ -27,6 +27,7 @@ interface ComponentProps {
 function AdminProvider({ children }: ComponentProps): JSX.Element {
   const [user, setUser] = useState<IUser>({ email: "", password: "" });
   const [currentList, setCurrentList] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState<string>("table");
   const [loading, setLoading] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
 
@@ -118,6 +119,8 @@ function AdminProvider({ children }: ComponentProps): JSX.Element {
         logout,
         currentList,
         setCurrentList,
+        currentPage,
+        setCurrentPage,
         checkFirebaseError,
         loading,
         setLoading,
