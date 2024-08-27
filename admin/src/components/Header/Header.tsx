@@ -5,27 +5,24 @@ import { IoMenu } from "react-icons/io5";
 import { AdminContext } from "../../contexts/authAdmin";
 
 function Header(): JSX.Element {
-  const { setCurrentList, logout } = useContext<any>(AdminContext);
+  const { setCurrentPage, logout } = useContext<any>(AdminContext);
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
-  const [buttonSelected, setButtonSelected] =
-    useState<string>("Todas as reservas");
+  const [buttonSelected, setButtonSelected] = useState<string>("Planilha");
 
   function handleSelectButton(navButton: INav): void {
-    setCurrentList(navButton.list);
+    setCurrentPage(navButton.page);
     setButtonSelected(navButton.content);
     setOpenMobileMenu(!openMobileMenu);
   }
 
   interface INav {
-    list: string;
+    page: string;
     content: string;
   }
 
   const navButtons: Array<INav> = [
-    { list: "all", content: "Todas as reservas" },
-    { list: "open", content: "Em aberto" },
-    { list: "used", content: "Utilizadas" },
-    { list: "expired", content: "Expiradas" },
+    { page: "table", content: "Planilha" },
+    { page: "graph", content: "Gráficos" },
   ];
 
   return (
@@ -46,7 +43,7 @@ function Header(): JSX.Element {
           <nav>
             {navButtons.map((navButton) => (
               <StyledButton
-                key={navButton.list}
+                key={navButton.page}
                 onClick={() => handleSelectButton(navButton)}
                 className={buttonSelected === navButton.content ? "active" : ""}
               >

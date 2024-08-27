@@ -56,14 +56,14 @@ export const Container = styled.header`
   nav {
     ${setFlexbox("center", "center", "row")}
     gap: 2rem;
-    width: 80%;
+    width: 30%;
   }
 
   @media screen and (max-width: 780px) {
     ${setFlexbox("flex-start", "center", "column")}
     padding-top: 0rem;
     top: 0;
-    height: 100vh;
+    height: 100%;
     width: 50%;
     position: fixed;
     z-index: 9999;
