@@ -7,7 +7,7 @@ export const Container = styled.section`
   width: 95%;
   height: auto;
   background-color: #ffffff;
-  padding: 5rem 0;
+  padding: 4.5rem 0;
   margin: 0 auto;
   border-radius: 5px;
   margin-top: 3rem;
@@ -15,24 +15,102 @@ export const Container = styled.section`
 
   .box-dashboard {
     min-width: 70rem;
+    ${setFlexbox("center", "center", "column")}
+    gap: 3rem;
+
+    &.vertical {
+      flex-direction: row;
+
+      h1 {
+        text-align: center;
+      }
+    }
 
     h1 {
       font-size: 3rem;
       width: 100%;
       color: ${palette.form_title_color};
     }
+  }
 
+  .box-dashboard-info {
     ${setFlexbox("center", "center", "column")}
-    gap: 3rem;
+    gap: 4rem;
+    width: 100%;
+
+    &.vertical {
+      width: auto;
+    }
+  }
+
+  .box-graphs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2rem;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "location location"
+      "place status";
+
+    .location {
+      grid-area: location;
+    }
+
+    .status {
+      grid-area: status;
+    }
+
+    .place {
+      grid-area: place;
+    }
+
+    .graph-bar,
+    .graph-pie,
+    .graph-horizontal-bar {
+      ${setFlexbox("center", "center", "row")}
+      box-shadow: 0px 2px 5px 2px #dfdfdf;
+      border-radius: 5px;
+      padding: 0.5rem;
+    }
+
+    .graph-bar {
+      canvas {
+        margin: 0 auto;
+        width: 380px;
+      }
+    }
+
+    .graph-pie {
+      canvas {
+        margin: 0 auto;
+        width: 240px;
+      }
+    }
+
+    .graph-horizontal-bar {
+      canvas {
+        margin: 0 auto;
+        width: 500px;
+      }
+    }
   }
 
   .box-selects {
     ${setFlexbox("center", "center", "row")}
     gap: 2rem;
+
+    &.vertical {
+      flex-direction: column;
+    }
   }
 
   .box-select-list {
     ${setFlexbox("center", "flex-start", "column")}
+
+    &.vertical {
+      width: 100%;
+    }
 
     label {
       font-weight: 600;
@@ -60,6 +138,16 @@ export const Container = styled.section`
     ${setFlexbox("space-between", "flex-end", "row")}
     width: 100%;
     gap: 9rem;
+
+    &.vertical {
+      ${setFlexbox("center", "center", "column")}
+      gap: 4rem;
+
+      .box-select-list,
+      select {
+        width: 100%;
+      }
+    }
 
     span {
       font-size: 1.8rem;
@@ -119,10 +207,38 @@ export const Container = styled.section`
   }
 
   @media screen and (max-width: 910px) {
+    .box-dashboard {
+      min-width: 0;
+
+      &.vertical {
+        flex-direction: column;
+      }
+    }
+
     .box-dashboard h1 {
       width: 90%;
       text-align: center;
     }
+
+    .box-graphs {
+      ${setFlexbox("center", "center", "column")}
+      gap: 5rem;
+
+      .graph-bar {
+        canvas {
+          margin: 0 auto;
+          width: 400px;
+        }
+      }
+
+      .graph-pie {
+        canvas {
+          margin: 0 auto;
+          width: 300px;
+        }
+      }
+    }
+
     .dashboard-info {
       ${setFlexbox("center", "center", "column")}
       width: 90%;
@@ -136,6 +252,31 @@ export const Container = styled.section`
     .box-select-list,
     select {
       width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .box-graphs {
+      flex-direction: column;
+      gap: 5rem;
+
+      .graph-bar {
+        canvas {
+          width: 250px;
+        }
+      }
+
+      .graph-pie {
+        canvas {
+          width: 200px;
+        }
+      }
+
+      .graph-horizontal-bar {
+        canvas {
+          width: 300px;
+        }
+      }
     }
   }
 `;

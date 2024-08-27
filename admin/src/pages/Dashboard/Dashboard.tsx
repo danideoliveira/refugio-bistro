@@ -22,24 +22,14 @@ import Modal from "../../components/Modal/Modal";
 import { toast } from "react-toastify";
 import Table from "../../components/Table/Table";
 import DateDropdown from "../../components/DatePicker/DatePicker";
-
-interface IReservation {
-  uid?: string;
-  cpf: string;
-  name: string;
-  phone: string;
-  email: string;
-  date: string;
-  hour: string;
-  people: string;
-  place: string;
-  location: string;
-  moment: string;
-  status: string;
-}
+import BarGraph from "../../components/Graphs/Bar";
+import PieGraph from "../../components/Graphs/Pie";
+import HorizontalBarGraph from "../../components/Graphs/HorizontalBar";
+import { IReservation } from "../../interfaces/IReservation";
 
 function Dashboard(): JSX.Element {
-  const { currentList, checkFirebaseError } = useContext<any>(AdminContext);
+  const { currentList, setCurrentList, checkFirebaseError, currentPage } =
+    useContext<any>(AdminContext);
   const [reservations, setReservations] = useState<Array<IReservation>>([]);
   const [expiredList, setExpiredList] = useState<Array<IReservation>>([]);
   const [usedList, setUsedList] = useState<Array<IReservation>>([]);
@@ -48,6 +38,7 @@ function Dashboard(): JSX.Element {
   const [locationFilter, setLocationFilter] =
     useState<string>("Qualquer unidade");
   const [dateFilter, setDateFilter] = useState<string>("Qualquer data");
+  const [statusFilter, setStatusFilter] = useState<string>("Todas as reservas");
 
   const today: Date = new Date();
   today.setDate(today.getDate());
@@ -63,6 +54,21 @@ function Dashboard(): JSX.Element {
     used: "#3eff68",
     expired: "#ff5d5d",
   };
+
+  useEffect(() => {
+    const allStatus: Array<any> = [
+      { list: "all", content: "Todas as reservas" },
+      { list: "open", content: "Em aberto" },
+      { list: "used", content: "Utilizadas" },
+      { list: "expired", content: "Expiradas" },
+    ];
+
+    allStatus.forEach((value) => {
+      if (value.content === statusFilter) {
+        setCurrentList(value.list);
+      }
+    });
+  }, [statusFilter, setCurrentList]);
 
   useEffect(() => {
     function loadAllReservations() {
@@ -225,7 +231,7 @@ function Dashboard(): JSX.Element {
   }
 
   async function deleteReservation(reservation: IReservation): Promise<void> {
-    const checkExpiredReservations = expiredList.filter(
+    const checkExpiredReservations: Array<IReservation> = expiredList.filter(
       (value: IReservation) =>
         value.date === reservation.date && value.cpf === reservation.cpf
     );
@@ -237,10 +243,10 @@ function Dashboard(): JSX.Element {
       );
     } else {
       if (reservation.uid) {
-        const docRef = doc(db, "users", reservation.uid);
+        const docRef: DocumentReference = doc(db, "users", reservation.uid);
 
-        await getDoc(docRef).then(async (snapshot) => {
-          const data = snapshot.data();
+        await getDoc(docRef).then(async (snapshot: DocumentSnapshot) => {
+          const data: DocumentData | undefined = snapshot.data();
 
           if (data?.reservations) {
             const otherReservations = data.reservations.filter(
@@ -257,14 +263,18 @@ function Dashboard(): JSX.Element {
 
             const existingExpired = expiredReservations[0];
             if (existingExpired) {
-              const existingExpiredQuery = collection(
+              const existingExpiredQuery: CollectionReference = collection(
                 db,
                 "expired_reservations"
               );
-              const querySnapshot = await getDocs(existingExpiredQuery);
-              const existingDocs = querySnapshot.docs.map((doc) => doc.data());
+              const querySnapshot: QuerySnapshot = await getDocs(
+                existingExpiredQuery
+              );
+              const existingDocs: Array<DocumentData> = querySnapshot.docs.map(
+                (doc) => doc.data()
+              );
 
-              const alreadyExists = existingDocs.some(
+              const alreadyExists: boolean = existingDocs.some(
                 (doc) =>
                   doc.date === existingExpired.date &&
                   doc.email === existingExpired.email
@@ -457,110 +467,178 @@ function Dashboard(): JSX.Element {
     return filtered[0].element;
   }
 
+  function showGraphs(): JSX.Element {
+    return (
+      <>
+        <HorizontalBarGraph
+          list={getCurrentList(locationFilter, dateFilter)}
+          type="location"
+        />
+        <BarGraph
+          list={getCurrentList(locationFilter, dateFilter)}
+          type="status"
+        />
+        <PieGraph
+          list={getCurrentList(locationFilter, dateFilter)}
+          type="place"
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <Container>
-        <div className="box-dashboard">
-          <h1>Controle de Reservas</h1>
-          <div className="dashboard-info">
-            <div className="box-selects">
-              <div className="box-select-list">
-                <label>Unidade</label>
-                <select
-                  onChange={(e) => {
-                    setLocationFilter(e.target.value);
-                  }}
+        <>
+          <div
+            className={`box-dashboard ${
+              currentPage === "graph" ? "vertical" : ""
+            }`}
+          >
+            <div
+              className={`box-dashboard-info ${
+                currentPage === "graph" ? "vertical" : ""
+              }`}
+            >
+              <h1>Controle de Reservas</h1>
+              <div
+                className={`dashboard-info ${
+                  currentPage === "graph" ? "vertical" : ""
+                }`}
+              >
+                <div
+                  className={`box-selects ${
+                    currentPage === "graph" ? "vertical" : ""
+                  }`}
                 >
-                  <option>Qualquer unidade</option>
-                  <option>Rio de Janeiro</option>
-                  <option>São Paulo</option>
-                  <option>Minas Gerais</option>
-                </select>
-              </div>
+                  <div
+                    className={`box-select-list ${
+                      currentPage === "graph" ? "vertical" : ""
+                    }`}
+                  >
+                    <label>Status</label>
+                    <select
+                      onChange={(e) => {
+                        setStatusFilter(e.target.value);
+                      }}
+                    >
+                      <option>Todas as reservas</option>
+                      <option>Em aberto</option>
+                      <option>Utilizadas</option>
+                      <option>Expiradas</option>
+                    </select>
+                  </div>
 
-              <div className="box-select-list">
-                <DateDropdown handleChange={setDateFilter} />{" "}
+                  <div className="box-select-list">
+                    <label>Unidade</label>
+                    <select
+                      onChange={(e) => {
+                        setLocationFilter(e.target.value);
+                      }}
+                    >
+                      <option>Qualquer unidade</option>
+                      <option>Rio de Janeiro</option>
+                      <option>São Paulo</option>
+                      <option>Minas Gerais</option>
+                    </select>
+                  </div>
+
+                  <div className="box-select-list">
+                    <DateDropdown handleChange={setDateFilter} />{" "}
+                  </div>
+                </div>
+
+                <span>
+                  {getCurrentList(locationFilter, dateFilter).length > 0
+                    ? `Reservas encontradas: ${
+                        getCurrentList(locationFilter, dateFilter).length
+                      }`
+                    : "Nenhuma reserva encontrada"}
+                </span>
               </div>
             </div>
 
-            <span>
-              {getCurrentList(locationFilter, dateFilter).length > 0
-                ? `Reservas encontradas: ${
-                    getCurrentList(locationFilter, dateFilter).length
-                  }`
-                : "Nenhuma reserva encontrada"}
-            </span>
-          </div>
+            {currentPage === "table" ? (
+              <>
+                {getCurrentList(locationFilter, dateFilter).length > 0 ? (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Pessoas</th>
+                        <th>Ambiente</th>
+                        <th>Unidade</th>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Momento</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
 
-          {getCurrentList(locationFilter, dateFilter).length > 0 ? (
-            <Table>
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Horário</th>
-                  <th>Pessoas</th>
-                  <th>Ambiente</th>
-                  <th>Unidade</th>
-                  <th>Cliente</th>
-                  <th>Email</th>
-                  <th>Telefone</th>
-                  <th>Momento</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {getCurrentList(locationFilter, dateFilter).map(
-                  (reservation: IReservation, index: number) => (
-                    <tr
-                      key={index}
-                      style={{
-                        background: statusColor[reservation.status],
-                      }}
-                    >
-                      <td data-label="Data da Reserva">{reservation.date}</td>
-                      <td data-label="Horário">{reservation.hour}</td>
-                      <td data-label="Pessoas">{reservation.people}</td>
-                      <td data-label="Ambiente">{reservation.place}</td>
-                      <td data-label="Unidade">{reservation.location}</td>
-                      <td data-label="Cliente">
-                        {shortenString(reservation.name, 20)}
-                      </td>
-                      <td data-label="Email">
-                        {shortenString(reservation.email, 40)}
-                      </td>
-                      <td data-label="Telefone">{reservation.phone}</td>
-                      <td data-label="Momento">{reservation.moment}</td>
-                      {reservation.status && getReservationStatus(reservation)}
-                    </tr>
-                  )
+                    <tbody>
+                      {getCurrentList(locationFilter, dateFilter).map(
+                        (reservation: IReservation, index: number) => (
+                          <tr
+                            key={index}
+                            style={{
+                              background: statusColor[reservation.status],
+                            }}
+                          >
+                            <td data-label="Data da Reserva">
+                              {reservation.date}
+                            </td>
+                            <td data-label="Horário">{reservation.hour}</td>
+                            <td data-label="Pessoas">{reservation.people}</td>
+                            <td data-label="Ambiente">{reservation.place}</td>
+                            <td data-label="Unidade">{reservation.location}</td>
+                            <td data-label="Cliente">
+                              {shortenString(reservation.name, 20)}
+                            </td>
+                            <td data-label="Email">
+                              {shortenString(reservation.email, 40)}
+                            </td>
+                            <td data-label="Telefone">{reservation.phone}</td>
+                            <td data-label="Momento">{reservation.moment}</td>
+                            {reservation.status &&
+                              getReservationStatus(reservation)}
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </Table>
+                ) : (
+                  <div className="no-reservations">Não há reservas</div>
                 )}
-              </tbody>
-            </Table>
-          ) : (
-            <div className="no-reservations">Não há reservas</div>
-          )}
-        </div>
-
-        <Modal
-          className="modal-dashboard"
-          condition={openModal}
-          setCondition={setOpenModal}
-        >
-          <h2>Confirmar presença de {customer?.name}?</h2>
-          <div>
-            <span>Email:</span>
-            <h3>{customer?.email}</h3>
-            <span>Telefone:</span>
-            <h3>{customer?.phone}</h3>
+              </>
+            ) : (
+              <>
+                <div className="box-graphs">{showGraphs()}</div>
+              </>
+            )}
           </div>
-          <button
-            className="modal-button"
-            onClick={() => handleSetUsed(customer)}
+
+          <Modal
+            className="modal-dashboard"
+            condition={openModal}
+            setCondition={setOpenModal}
           >
-            Confirmar presença
-          </button>
-        </Modal>
+            <h2>Confirmar presença de {customer?.name}?</h2>
+            <div>
+              <span>Email:</span>
+              <h3>{customer?.email}</h3>
+              <span>Telefone:</span>
+              <h3>{customer?.phone}</h3>
+            </div>
+            <button
+              className="modal-button"
+              onClick={() => handleSetUsed(customer)}
+            >
+              Confirmar presença
+            </button>
+          </Modal>
+        </>
       </Container>
     </>
   );
